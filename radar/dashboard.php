@@ -1,8 +1,8 @@
 <?
   error_reporting(0);
   session_start();
-  require_once("../libs/php/conn.php");
-  require_once("../libs/php/funcoes.php");
+  require("../libs/php/funcoes.php");
+  require("../libs/php/conn.php");
   $agora = now();
 
   if($_GET['filtro']=="dia"){

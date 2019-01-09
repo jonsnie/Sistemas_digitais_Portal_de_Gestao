@@ -2,8 +2,15 @@
   error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
   //error_reporting(E_ALL);
   session_start();
-  require_once("../libs/php/conn.php");
-  require_once("../libs/php/funcoes.php");
+  require("../libs/php/funcoes.php");
+  require("../libs/php/conn.php");
+
+if(isset($_POST['filtro_data']))
+{
+  $filtro_data = mkt2date(date2mkt($_POST['filtro_data']));
+}else {
+  $filtro_data = now();
+}
   $agora = now();
 
   $meses[1]['curto'] = "Jan";
@@ -69,7 +76,7 @@
           FROM
           	   waze.alerts
           WHERE
-          	   pub_utc_date BETWEEN '".$agora['ano']."-".$agora['mes']."-01 00:00:00' AND '".$agora['ano']."-".$agora['mes']."-".$agora['ultimo_dia']." 23:59:59'
+          	   pub_utc_date BETWEEN '".$filtro_data['ano']."-".$filtro_data['mes']."-01 00:00:00' AND '".$filtro_data['ano']."-".$filtro_data['mes']."-".$filtro_data['ultimo_dia']." 23:59:59'
           GROUP BY
             	type, subtype,
             	date_part('day', pub_utc_date),
@@ -82,12 +89,9 @@
 								<section class="panel">
 									<header class="panel-heading">
                     <div class="panel-actions" style='margin-top:-12px'>
-
-                      <a href="#modalForm" class="modal-with-form">
-                        <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary"><i class="fa fa-search"></i> Filtro</button>
-                      </a>
-
-                      <!--<a href="#" ic-get-from="sistema/logs.php" ic-target="#wrap" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary"><i class="fa fa-user-plus"></i> Novo usuário !</a>-->
+                      <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" data-toggle="modal" data-target="#modal_filtro">
+                        Filtros
+                      </button>
 									  </div>
                   </header>
 									<div class="panel-body">
@@ -95,6 +99,9 @@
     <div class="col-sm-12">
       <h5>Quantidade de registros no banco de dados</h5>
 <?
+
+
+
   while($d = pg_fetch_assoc($res))
   {
   //  print_r_pre($d);
@@ -115,14 +122,14 @@
 
   }
 
-  for($dia = 1; $dia <= $agora['ultimo_dia']; $dia++)
+  for($dia = 1; $dia <= $filtro_data['ultimo_dia']; $dia++)
   {
     unset($valor);
     $valor = $reports[$dia];
     if($valor==""){$valor=0;}
     $vetor[] = "[".$dia.", ".$valor."]";
 
-    $legenda[] = "[".$dia.", '".$dia."/".$agora['mes']."']";
+    $legenda[] = "[".$dia.", '".$dia."/".$filtro_data['mes']."']";
   }
     $legenda_str = implode(",",$legenda);
     $vetor_str   = implode(",",$vetor);
@@ -142,8 +149,8 @@
     <div class="col-sm-4" style="margin-top:40px;margin-left:10px">
 <?
 
-  print_r_pre($_GET);
-  print_r_pre($_POST);
+  //print_r_pre($_GET);
+  //print_r_pre($_POST);
   //print_r_pre($reports_tipo);
 
   foreach($reports_tipo as $tipo => $qtd)
@@ -231,15 +238,6 @@
                  case "HAZARD_ON_SHOULDER_CAR_STOPPED":     $tipo = "Veículo parado sobre a via";break;
                  case "HAZARD_ON_SHOULDER_ANIMALS":         $tipo = "Animal na via";             break;
 
-
-
-
-
-
-
-
-
-
               }
               $vetaux[] = "['".$tipo."',".$qtd."]";
             }
@@ -321,27 +319,21 @@
 									</div>
 								</section>
 							</div>
-
-
-
-<!-- Modal Warning -->
-								<!--	<a class="mb-xs mt-xs mr-xs modal-basic btn btn-warning" href="#modalRemover" remover_id="4">Remover 1</a>
-                  <a class="mb-xs mt-xs mr-xs modal-basic btn btn-warning" href="#modalRemover" remover_id="5">Remover 2</a>-->
-
+<p>AAA</p>
 </section>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+
+
+
+<div class="modal fade" id="modal_filtro" tabindex="-1" role="dialog" aria-labelledby="modal_filtro" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">Filtros de pesquisa</h5>
       </div>
       <form id="filtro" name="filtro" method="post" action="waze/index.php">
-                <div class="modal-body">
+      <div class="modal-body">
                   <select id="filtro_data" name="filtro_data" class="form-control">
 
                      <?
@@ -356,26 +348,22 @@
                             {
                                 if($a == $agora['ano'] && $m == $mes_ate){ $sel = "selected"; }
 
-                                echo  "<option value='".$m."/".$a."' ".$sel.">".$meses[$m]['longo']."/".$a."</option>";
+                                echo  "<option value='01/".$m."/".$a." 00:00:00' ".$sel.">".$meses[$m]['longo']."/".$a."</option>";
                             }
                           echo "</optgroup>";
 
                       }
                      ?>
                   </select>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                  <button type="submit" class="btn btn-primary">Filtrar</button>
-                </div>
-    </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+      </div>
+     </form>
     </div>
   </div>
 </div>
-
-
-
-
 
 
 <script>

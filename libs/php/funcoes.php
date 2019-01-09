@@ -87,4 +87,53 @@ if($aux[1] != ""){  return $data." ".$tmp[1]; }
 			 else{	return $data; 			  }
 
 }
+
+
+function mkt2date($mkt){
+	if($mkt != ""){
+			$data['dia']  = date('d',$mkt);
+			$data['mes']  = date('m',$mkt);
+			$data['ano']  = date('Y',$mkt);
+			$data['hora'] = date('H',$mkt);
+			$data['min']  = date('i',$mkt);
+			$data['seg']  = date('s',$mkt);
+			$data['data'] = $data['dia'].'/'.$data['mes'].'/'.$data['ano'];
+			$data['hm']   = $data['hora'].':'.$data['min'];
+			$data['hms']  = $data['hora'].':'.$data['min'].':'.$data['seg'];
+			$data['dthm'] = $data['data']." ".$data['hm'];
+			$data['dthms'] = $data['data']." ".$data['hm'].":".$data['seg'];
+			$data['mkt']  = $mkt;
+			$data['ultimo_dia']  = date('t',$mkt);
+			switch($data['mes'])
+			{
+				case '01': $data['mes_txt_c'] = "Jan"; $data['mes_txt'] = "Janeiro";   break;
+				case '02': $data['mes_txt_c'] = "Fev"; $data['mes_txt'] = "Fevereiro"; break;
+				case '03': $data['mes_txt_c'] = "Mar"; $data['mes_txt'] = "Março";     break;
+				case '04': $data['mes_txt_c'] = "Abr"; $data['mes_txt'] = "Abril";     break;
+				case '05': $data['mes_txt_c'] = "Mai"; $data['mes_txt'] = "Maio";      break;
+				case '06': $data['mes_txt_c'] = "Jun"; $data['mes_txt'] = "Junho";     break;
+				case '07': $data['mes_txt_c'] = "Jul"; $data['mes_txt'] = "Julho";     break;
+				case '08': $data['mes_txt_c'] = "Ago"; $data['mes_txt'] = "Agosto";   break;
+				case '09': $data['mes_txt_c'] = "Set"; $data['mes_txt'] = "Setembro";  break;
+				case '10': $data['mes_txt_c'] = "Out"; $data['mes_txt'] = "Outubro";   break;
+				case '11': $data['mes_txt_c'] = "Nov"; $data['mes_txt'] = "Novembro";  break;
+				case '12': $data['mes_txt_c'] = "Dez"; $data['mes_txt'] = "Dezembro";  break;
+			}
+			return $data;
+	}else{
+		return Null;
+	}
+}
+function date2mkt($data){
+
+		$dtAux = explode(" ",$data);
+		if(count($dtAux) == 2){
+			$dt   = explode("/",$dtAux[0]);
+			$hora = explode(":",$dtAux[1]);
+			return mktime($hora[0],$hora[1],$hora[2],$dt[1],$dt[0],$dt[2]);
+		}else{
+			$dt   = explode("/",$dtAux[0]);
+			return mktime(23,59,59,$dt[1],$dt[0],$dt[2]);
+		}
+}
 ?>
