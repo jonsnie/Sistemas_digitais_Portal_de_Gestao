@@ -3,3 +3,4 @@ _fontes/
 .env
 assets/
 .gitignore
+.DS_Store
