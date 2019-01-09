@@ -1,4 +1,4 @@
-# Sistemas digitais<br>Portal de Gestão de processo públicos e dados abertos
+# Sistemas digitais<br> Portal de Gestão de processo públicos e dados abertos
 Portal de Gestão dos sistemas digitais da Secretaria de Planejamento Urbano e Desenvolvimento Sustentável (SEPUD) da cidade de Joinville.
 
 # Objetivos
