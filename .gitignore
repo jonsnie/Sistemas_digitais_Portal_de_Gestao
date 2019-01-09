@@ -1,0 +1,5 @@
+_fontes/
+.remote-sync.json
+.env
+assets
+.gitignore
