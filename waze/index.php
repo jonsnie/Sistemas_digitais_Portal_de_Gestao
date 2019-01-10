@@ -88,7 +88,8 @@ if(isset($_POST['filtro_data']))
 <div class="col-md-12">
 								<section class="panel">
 									<header class="panel-heading">
-                    <div class="panel-actions" style='margin-top:-12px'>
+                    <?=$filtro_data['mes_txt']."/".$filtro_data['ano'];?>
+                    <div class="panel-actions">
                       <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" data-toggle="modal" data-target="#modal_filtro">
                         Filtros
                       </button>
@@ -319,7 +320,6 @@ if(isset($_POST['filtro_data']))
 									</div>
 								</section>
 							</div>
-<p>AAA</p>
 </section>
 
 
@@ -334,31 +334,38 @@ if(isset($_POST['filtro_data']))
       </div>
       <form id="filtro" name="filtro" method="post" action="waze/index.php">
       <div class="modal-body">
-                  <select id="filtro_data" name="filtro_data" class="form-control">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                      <label for="filtro_data">Período:</label>
+                          <select id="filtro_data" name="filtro_data" class="form-control">
 
-                     <?
-                      for($a = 2017; $a <= $agora['ano']; $a++)
-                      {
-                          echo "<optgroup label='".$a."'>";
+                             <?
+                              for($a = 2017; $a <= $agora['ano']; $a++)
+                              {
+                                  echo "<optgroup label='".$a."'>";
 
-                            if($a == $agora['ano']){ $mes_ate = date('n'); }
-                            else                   { $mes_ate = 12;        }
+                                    if($a == $agora['ano']){ $mes_ate = date('n'); }
+                                    else                   { $mes_ate = 12;        }
 
-                            for($m = 1; $m <= $mes_ate; $m++)
-                            {
-                                if($a == $agora['ano'] && $m == $mes_ate){ $sel = "selected"; }
+                                    for($m = 1; $m <= $mes_ate; $m++)
+                                    {
+                                        if($a == $agora['ano'] && $m == $mes_ate){ $sel = "selected"; }
 
-                                echo  "<option value='01/".$m."/".$a." 00:00:00' ".$sel.">".$meses[$m]['longo']."/".$a."</option>";
-                            }
-                          echo "</optgroup>";
+                                        echo  "<option value='01/".$m."/".$a." 00:00:00' ".$sel.">".$meses[$m]['longo']."/".$a."</option>";
+                                    }
+                                  echo "</optgroup>";
 
-                      }
-                     ?>
-                  </select>
+                              }
+                             ?>
+                          </select>
+                    </div>
+                </div>
+              </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button type="submit" class="btn btn-primary">Filtrar</button>
+        <button type="button" class="btn btn-primary"   data-dismiss="modal">Filtrar</button>
       </div>
      </form>
     </div>
@@ -369,12 +376,12 @@ if(isset($_POST['filtro_data']))
 <script>
 (function( $ ) {
 	'use strict';
-
-
-
-
-
   (function() {
+
+    $('#modal_filtro').on('hidden.bs.modal', function (e) {
+        $("#filtro").submit();
+    })
+
     var plot = $.plot('#flotBasic', flotBasicData, {
       series: {
         lines: {
