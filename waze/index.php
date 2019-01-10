@@ -88,7 +88,7 @@ if(isset($_POST['filtro_data']))
 <div class="col-md-12">
 								<section class="panel">
 									<header class="panel-heading">
-                    <?=$filtro_data['mes_txt']."/".$filtro_data['ano'];?>
+                    Mês de referência: <b><?=$filtro_data['mes_txt']."/".$filtro_data['ano'];?></b>
                     <div class="panel-actions">
                       <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" data-toggle="modal" data-target="#modal_filtro">
                         Filtros
