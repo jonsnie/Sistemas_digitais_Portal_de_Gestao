@@ -3,21 +3,51 @@
   require("../libs/php/funcoes.php");
   require("../libs/php/conn.php");
 
+  if(isset($_POST['filtro_data']))
+  {
+    $filtro_data = mkt2date(date2mkt($_POST['filtro_data']));
+  }else {
+    $filtro_data = now();
+  }
   $agora       = now();
-  $filtro_data = now();
 
   $id = $_GET['id'];
 
-  if($_GET['filtro']=="dia"){
-    $ontem = date('Y-m-d',strtotime("-1 days"));
-    $filtro_sql = " EF.pubdate = '".$ontem."'";
-    $txt_filtro = "Referência: ".formataData($ontem,1);
-  }else{
-    $filtro_sql = " EF.pubdate >= '".$agora['ano']."-".$agora['mes']."-01'";
-    $txt_filtro = "Referência: ".$agora['mes_txt_c']."/".$agora['ano'];
-  }
 
- $sql  = "SELECT  EF.equipment,  EQ.address, EQ.id, EF.pubdate,
+
+    $meses[1]['curto'] = "Jan";
+    $meses[2]['curto'] = "Fev";
+    $meses[3]['curto'] = "Mar";
+    $meses[4]['curto'] = "Abr";
+    $meses[5]['curto'] = "Mai";
+    $meses[6]['curto'] = "Jun";
+    $meses[7]['curto'] = "Jul";
+    $meses[8]['curto'] = "Ago";
+    $meses[9]['curto'] = "Set";
+    $meses[10]['curto'] = "Out";
+    $meses[11]['curto'] = "Nov";
+    $meses[12]['curto'] = "Dez";
+
+
+    $meses[1]['longo'] = "Janeiro";
+    $meses[2]['longo'] = "Fevereiro";
+    $meses[3]['longo'] = "Março";
+    $meses[4]['longo'] = "Abril";
+    $meses[5]['longo'] = "Maio";
+    $meses[6]['longo'] = "Junho";
+    $meses[7]['longo'] = "Julho";
+    $meses[8]['longo'] = "Agosto";
+    $meses[9]['longo'] = "Setembro";
+    $meses[10]['longo'] = "Outubro";
+    $meses[11]['longo'] = "Novembro";
+    $meses[12]['longo'] = "Dezembro";
+
+
+
+    $filtro_sql = " EF.pubdate >= '".$filtro_data['ano']."-".$filtro_data['mes']."-01'";
+    $txt_filtro = "Referência: ".$filtro_data['mes_txt_c']."/".$filtro_data['ano'];
+
+    $sql  = "SELECT  EF.equipment,  EQ.address, EQ.id, EF.pubdate,
                (SUM(F.speed_00_10) + 	SUM(F.speed_11_20) + 	SUM(F.speed_21_30) + 	SUM(F.speed_31_40) +
                 SUM(F.speed_41_50) +	SUM(F.speed_51_60) +	SUM(F.speed_61_70) +	SUM(F.speed_71_80) +
                 SUM(F.speed_81_90) +	SUM(F.speed_91_100)+	SUM(F.speed_100_up)) AS contador_veiculos
@@ -84,6 +114,10 @@
                     </div>
                   </header>
 									<div class="panel-body">
+
+                    <?
+                      print_r_pre($_POST);
+                    ?>
 										<div class="table-responsive">
                       <table class="table table-hover mb-none">
 												<thead>
@@ -172,36 +206,53 @@
 
 
 
-<!-- Modal Warning -->
-								<!--	<a class="mb-xs mt-xs mr-xs modal-basic btn btn-warning" href="#modalRemover" remover_id="4">Remover 1</a>
-                  <a class="mb-xs mt-xs mr-xs modal-basic btn btn-warning" href="#modalRemover" remover_id="5">Remover 2</a>-->
 
-									<div id="modalRemover" class="modal-block modal-header-color modal-block-warning mfp-hide">
-										<section class="panel">
-											<header class="panel-heading">
-												<h2 class="panel-title">Atenção</h2>
-											</header>
-											<div class="panel-body">
-												<div class="modal-wrapper">
-													<div class="modal-icon">
-														<i class="fa fa-warning"></i>
-													</div>
-													<div class="modal-text">
-														<h4>Você tem certeza que deseja remover este cadastro?</h4>
-														<p>Esta operação é permanente.</p>
-													</div>
-												</div>
-											</div>
-											<footer class="panel-footer">
-												<div class="row">
-													<div class="col-md-12 text-right">
-                            <button class="btn btn-warning modal-confirm">Remover</button>
-														<button class="btn btn-default modal-dismiss">Cancelar</button>
-													</div>
-												</div>
-											</footer>
-										</section>
-									</div>
+
+            <div class="modal fade" id="modal_filtro" tabindex="-1" role="dialog" aria-labelledby="modal_filtro" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Filtros de pesquisa</h5>
+                  </div>
+                  <form id="filtro" name="filtro" method="post" action="radar/detalhado.php?id=<?=$id;?>">
+                  <div class="modal-body">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                  <label for="filtro_data">Período:</label>
+                                      <select id="filtro_data" name="filtro_data" class="form-control">
+
+                                         <?
+                                          for($a = 2017; $a <= $agora['ano']; $a++)
+                                          {
+                                              echo "<optgroup label='".$a."'>";
+
+                                                if($a == $agora['ano']){ $mes_ate = date('n'); }
+                                                else                   { $mes_ate = 12;        }
+
+                                                for($m = 1; $m <= $mes_ate; $m++)
+                                                {
+                                                    if($a == $agora['ano'] && $m == $mes_ate){ $sel = "selected"; }
+
+                                                    echo  "<option value='01/".$m."/".$a." 00:00:00' ".$sel.">".$meses[$m]['longo']."/".$a."</option>";
+                                                }
+                                              echo "</optgroup>";
+
+                                          }
+                                         ?>
+                                      </select>
+                                </div>
+                            </div>
+                          </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary"   data-dismiss="modal">Filtrar</button>
+                  </div>
+                 </form>
+                </div>
+              </div>
+            </div>
 </section>
 <script>
 
@@ -215,6 +266,12 @@
 
 
   (function() {
+
+    $('#modal_filtro').on('hidden.bs.modal', function (e) {
+        $("#filtro").submit();
+    })
+
+
     var plot = $.plot('#flotBasic', flotBasicData, {
       series: {
         lines: {
