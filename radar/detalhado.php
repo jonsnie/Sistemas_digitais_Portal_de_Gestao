@@ -3,7 +3,8 @@
   require("../libs/php/funcoes.php");
   require("../libs/php/conn.php");
 
-  $agora = now();
+  $agora       = now();
+  $filtro_data = now();
 
   $id = $_GET['id'];
 
@@ -75,7 +76,11 @@
 <div class="col-md-12">
 								<section class="panel">
 									<header class="panel-heading">
-                    <div class="panel-actions" style='margin-top:-12px'>
+                    Mês de referência: <b><?=$filtro_data['mes_txt']."/".$filtro_data['ano'];?></b>
+                    <div class="panel-actions">
+                      <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" data-toggle="modal" data-target="#modal_filtro">
+                        Filtros
+                      </button>
                     </div>
                   </header>
 									<div class="panel-body">
