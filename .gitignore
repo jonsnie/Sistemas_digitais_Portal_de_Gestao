@@ -1,7 +1,10 @@
 _fontes/
 .remote-sync.json
 .env
-assets/
 .gitignore
 .DS_Store
 teste.php
+assets/ajax
+assets/images
+assets/javascripts
+assets/stylesheets
