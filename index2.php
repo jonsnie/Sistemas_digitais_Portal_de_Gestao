@@ -20,6 +20,11 @@
 				$titulo    = "SmartMobility";
 				$subtitulo = "Aplicações";
 				break;
+			case "dados":
+				$param 		 = "dados";
+				$titulo    = "Dados abertos";
+				$subtitulo = "Mobilidade Urbana";
+				break;
 			default:
 				header("Location: index3.php");
 				break;

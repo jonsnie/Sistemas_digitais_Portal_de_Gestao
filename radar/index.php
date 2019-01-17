@@ -103,7 +103,8 @@
         )
 
 */
-
+if(isset($eqps))
+{
   foreach($eqps as $eqp => $info)
   {
 
@@ -124,7 +125,7 @@
     echo "<td class='text-center'>".number_format($info['contador_veiculos'],0,'','.')."</td>";
 
     echo "<td class='actions text-center'>
-            <a href='#' ic-get-from='radar/detalhado.php?id=".$info['id']."' ic-target='#wrap'>
+            <a style='cursor:pointer' ic-get-from='radar/detalhado.php?id=".$info['id']."' ic-target='#wrap'>
             <i class='fa fa-eye'></i>
             </a>
             <!--<a href='#modalRemover' class='delete-row modal-basic' remover_id='".$d['id']."'><i class='fa fa-trash-o'></i></a>-->
@@ -132,6 +133,7 @@
 
     echo "</tr>";
   }
+}
 
 ?>
 								  </tbody>
@@ -142,36 +144,7 @@
 							</div>
 
 
-<!-- Modal Warning -->
-								<!--	<a class="mb-xs mt-xs mr-xs modal-basic btn btn-warning" href="#modalRemover" remover_id="4">Remover 1</a>
-                  <a class="mb-xs mt-xs mr-xs modal-basic btn btn-warning" href="#modalRemover" remover_id="5">Remover 2</a>-->
 
-									<div id="modalRemover" class="modal-block modal-header-color modal-block-warning mfp-hide">
-										<section class="panel">
-											<header class="panel-heading">
-												<h2 class="panel-title">Atenção</h2>
-											</header>
-											<div class="panel-body">
-												<div class="modal-wrapper">
-													<div class="modal-icon">
-														<i class="fa fa-warning"></i>
-													</div>
-													<div class="modal-text">
-														<h4>Você tem certeza que deseja remover este cadastro?</h4>
-														<p>Esta operação é permanente.</p>
-													</div>
-												</div>
-											</div>
-											<footer class="panel-footer">
-												<div class="row">
-													<div class="col-md-12 text-right">
-                            <button class="btn btn-warning modal-confirm">Remover</button>
-														<button class="btn btn-default modal-dismiss">Cancelar</button>
-													</div>
-												</div>
-											</footer>
-										</section>
-									</div>
 </section>
 <script>
 (function( $ ) {

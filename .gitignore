@@ -4,6 +4,7 @@ _fontes/
 .gitignore
 .DS_Store
 teste.php
+*_bkp*
 assets/ajax
 assets/images
 assets/javascripts

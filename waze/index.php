@@ -5,9 +5,9 @@
   require("../libs/php/funcoes.php");
   require("../libs/php/conn.php");
 
-if(isset($_POST['filtro_data']))
+if(isset($_POST['waze_filtro_data']))
 {
-  $filtro_data = mkt2date(date2mkt($_POST['filtro_data']));
+  $filtro_data = mkt2date(date2mkt($_POST['waze_filtro_data']));
 }else {
   $filtro_data = now();
 }
@@ -42,31 +42,6 @@ if(isset($_POST['filtro_data']))
 
 
 
-?>
-<style>
-.flot-x-axis .flot-tick-label {
-    white-space: nowrap;
-    transform: translate(-9px, 0) rotate(-60deg);
-    text-indent: -100%;
-    transform-origin: top right;
-    text-align: right !important;
-
-}
-</style>
-<section role="main" class="content-body">
-  <header class="page-header">
-    <h2>Dashboard</h2>
-    <div class="right-wrapper pull-right" style='margin-right:15px;'>
-      <ol class="breadcrumbs">
-        <li><a href="index_sistema.php"><i class="fa fa-home"></i></a></li>
-        <li><span class='text-muted'>Waze</span></li>
-        <li><span class='text-muted'>Dashboard</span></li>
-      </ol>
-      <!--<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>-->
-    </div>
-  </header>
-
-<?
   $sql = "SELECT
         			 type, subtype,
         			 COUNT(*) AS qtd,
@@ -82,27 +57,7 @@ if(isset($_POST['filtro_data']))
             	date_part('day', pub_utc_date),
             	date_part('month', pub_utc_date),
             	date_part('year', pub_utc_date)";
-  $res=pg_query($conn_neogrid,$sql)or die("Error ".__LINE__);
-
-?>
-<div class="col-md-12">
-								<section class="panel">
-									<header class="panel-heading">
-                    Mês de referência: <b><?=$filtro_data['mes_txt']."/".$filtro_data['ano'];?></b>
-                    <div class="panel-actions">
-                      <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" data-toggle="modal" data-target="#modal_filtro">
-                        Filtros
-                      </button>
-									  </div>
-                  </header>
-									<div class="panel-body">
-<div class="row">
-    <div class="col-sm-12">
-      <h5>Quantidade de registros no banco de dados</h5>
-<?
-
-
-
+          $res=pg_query($conn_neogrid,$sql)or die("Error ".__LINE__);
   while($d = pg_fetch_assoc($res))
   {
   //  print_r_pre($d);
@@ -135,157 +90,47 @@ if(isset($_POST['filtro_data']))
     $legenda_str = implode(",",$legenda);
     $vetor_str   = implode(",",$vetor);
 ?>
-<div class="chart chart-md" id="flotBasic" style="height:200px"></div>
-<script type="text/javascript">
+<style>
+.flot-x-axis .flot-tick-label {
+    white-space: nowrap;
+    transform: translate(-9px, 0) rotate(-60deg);
+    text-indent: -100%;
+    transform-origin: top right;
+    text-align: right !important;
 
-  var flotBasicData = [{
-    data: [<?=$vetor_str;?>],
-    color: "#2baab1"
-  }];
-</script>
-</div>
-<div>
+}
+</style>
+<section role="main" class="content-body">
+  <header class="page-header">
+    <h2>Dashboard</h2>
+    <div class="right-wrapper pull-right" style='margin-right:15px;'>
+      <ol class="breadcrumbs">
+        <li><a href="index_sistema.php"><i class="fa fa-home"></i></a></li>
+        <li><span class='text-muted'>Waze</span></li>
+        <li><span class='text-muted'>Dashboard</span></li>
+      </ol>
+      <!--<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>-->
+    </div>
+  </header>
 
-  <div class="row">
-    <div class="col-sm-4" style="margin-top:40px;margin-left:10px">
 <?
 
-  //print_r_pre($_GET);
-  //print_r_pre($_POST);
-  //print_r_pre($reports_tipo);
 
-  foreach($reports_tipo as $tipo => $qtd)
-  {
-    switch($tipo)
-    {
-       case "ACCIDENT":      $tipo = "Acidente";         break;
-       case "JAM":           $tipo = "Congestionamento"; break;
-       case "ROAD_CLOSED":   $tipo = "Rua interditada";  break;
-       case "WEATHERHAZARD": $tipo = "Alertas";          break;
-    }
-
-    $vetaux[] = "['".$tipo."',".$qtd."]";
-  }
-
-  $reports_tipo_str = implode(",",$vetaux);
-
-  //echo $reports_tipo_str;
 ?>
-    <h5>Quantidade por tipo</h5>
-      <div class="chart chart-md" id="graf_tipos" style="height:200px"></div>
-			<script type="text/javascript">
-
-				var flotBarsData = [<?=$reports_tipo_str;?>];
-        (function() {
-		var plot = $.plot('#graf_tipos', [flotBarsData], {
-			colors: ['#8CC9E8'],
-			series: {
-				bars: {
-					show: true,
-					barWidth: 0.8,
-					align: 'center'
-				}
-			},
-			xaxis: {
-				mode: 'categories',
-				tickLength: 0
-			},
-			grid: {
-				hoverable: true,
-				clickable: true,
-				borderColor: 'rgba(0,0,0,0.1)',
-				borderWidth: 1,
-				labelMargin: 15,
-				backgroundColor: 'transparent'
-			},
-			tooltip: true,
-			tooltipOpts: {
-				content: '%y',
-				shifts: {
-					x: -10,
-					y: 20
-				},
-				defaultTheme: false
-			}
-		});
-	})();
-			</script>
+<div class="col-md-12">
+								<section class="panel">
+									<header class="panel-heading">
+                    Mês de referência: <b><?=$filtro_data['mes_txt']."/".$filtro_data['ano'];?></b>
+                    <div class="panel-actions">
+                      <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" data-toggle="modal" data-target="#waze_modal_filtro">
+                        Filtros
+                      </button>
+									  </div>
+                  </header>
+									<div class="panel-body">
 
 
 
-    </div>
-    <div class="col-sm-8" style="margin-top:40px;margin-left:-10px">
-      <h5>Alertas <small>(Exceto buraco na via)</small></h5>
-      <div class="chart chart-md" id="graf_alertas" style="height:200px"></div>
-        <?
-          unset($vetaux);
-          foreach($reports_alertas as $tipo => $qtd)
-          {
-            if($tipo != "HAZARD_ON_ROAD_POT_HOLE")
-            {
-              switch($tipo)
-              {
-                 case "WEATHERHAZARD":                      $tipo = "Perigo";             break;
-                 case "HAZARD_ON_ROAD":                     $tipo = "Perigo na via";      break;
-                 case "HAZARD_ON_ROAD_CAR_STOPPED":         $tipo = "Veículo parado";     break;
-                 case "HAZARD_ON_ROAD_CONSTRUCTION":        $tipo = "Via em construção";  break;
-                 case "HAZARD_ON_ROAD_ICE":                 $tipo = "Gelo na via";        break;
-                 case "HAZARD_ON_ROAD_OBJECT":              $tipo = "Objeto na via";      break;
-                 case "HAZARD_ON_ROAD_TRAFFIC_LIGHT_FAULT": $tipo = "Semáforo queimado";         break;
-                 case "HAZARD_WEATHER":                     $tipo = "Clima perigoso";            break;
-                 case "HAZARD_WEATHER_FLOOD":               $tipo = "Inundação";                 break;
-                 case "HAZARD_WEATHER_FOG":                 $tipo = "Neblina";                   break;
-                 case "HAZARD_ON_SHOULDER_MISSING_SIGN":    $tipo = "Sinalização perdida";       break;
-                 case "HAZARD_ON_SHOULDER_CAR_STOPPED":     $tipo = "Veículo parado sobre a via";break;
-                 case "HAZARD_ON_SHOULDER_ANIMALS":         $tipo = "Animal na via";             break;
-
-              }
-              $vetaux[] = "['".$tipo."',".$qtd."]";
-            }
-          }
-          $reports_alertas_str = implode(",",$vetaux);
-          //echo $reports_alertas_str;
-        ?>
-
-        <script type="text/javascript">
-
-          var flotBarsData = [<?=$reports_alertas_str;?>];
-          (function() {
-      var plot = $.plot('#graf_alertas', [flotBarsData], {
-        colors: ['#FFC9C9'],
-        series: {
-          bars: {
-            show: true,
-            barWidth: 0.8,
-            align: 'center'
-          }
-        },
-        xaxis: {
-          mode: 'categories',
-          tickLength: 0
-        },
-        grid: {
-          hoverable: true,
-          clickable: true,
-          borderColor: 'rgba(0,0,0,0.1)',
-          borderWidth: 1,
-          labelMargin: 15,
-          backgroundColor: 'transparent'
-        },
-        tooltip: true,
-        tooltipOpts: {
-          content: '%y',
-          shifts: {
-            x: -10,
-            y: 20
-          },
-          defaultTheme: false
-        }
-      });
-    })();
-        </script>
-    </div>
-  </div>
 
 
   <div class="row">
@@ -311,10 +156,178 @@ if(isset($_POST['filtro_data']))
           </tbody>
         </table>
     </div>
-    <div class="col-sm-2" style="margin-top:160px;margin-left:-10px">
+    <div class="col-sm-6" style="margin-top:160px;margin-left:-10px">
+          Alertas ATIVOS:
 
+          "SELECT type, subtype, count(*) as qtd
+          FROM alerts WHERE datafile_id = (SELECT id FROM data_files ORDER BY id DESC LIMIT 1)
+          GROUP BY type, subtype;"
     </div>
   </div>
+
+
+<!----------------------------------------------------------------------------->
+<div class="row">
+    <div class="col-sm-12">
+      <h5>Quantidade de registros no banco de dados</h5>
+
+<div class="chart chart-md" id="flotBasic" style="height:200px"></div>
+<script type="text/javascript">
+
+  var flotBasicData = [{
+    data: [<?=$vetor_str;?>],
+    color: "#2baab1"
+  }];
+</script>
+</div>
+<div>
+<!----------------------------------------------------------------------------->
+<div class="row">
+  <div class="col-sm-4" style="margin-top:40px;margin-left:10px">
+<?
+
+//print_r_pre($_GET);
+//print_r_pre($_POST);
+//print_r_pre($reports_tipo);
+
+foreach($reports_tipo as $tipo => $qtd)
+{
+  switch($tipo)
+  {
+     case "ACCIDENT":      $tipo = "Acidente";         break;
+     case "JAM":           $tipo = "Congestionamento"; break;
+     case "ROAD_CLOSED":   $tipo = "Rua interditada";  break;
+     case "WEATHERHAZARD": $tipo = "Alertas";          break;
+  }
+
+  $vetaux[] = "['".$tipo."',".$qtd."]";
+}
+
+$reports_tipo_str = implode(",",$vetaux);
+
+//echo $reports_tipo_str;
+?>
+  <h5>Quantidade por tipo</h5>
+    <div class="chart chart-md" id="graf_tipos" style="height:200px"></div>
+    <script type="text/javascript">
+
+      var flotBarsData = [<?=$reports_tipo_str;?>];
+      (function() {
+  var plot = $.plot('#graf_tipos', [flotBarsData], {
+    colors: ['#8CC9E8'],
+    series: {
+      bars: {
+        show: true,
+        barWidth: 0.8,
+        align: 'center'
+      }
+    },
+    xaxis: {
+      mode: 'categories',
+      tickLength: 0
+    },
+    grid: {
+      hoverable: true,
+      clickable: true,
+      borderColor: 'rgba(0,0,0,0.1)',
+      borderWidth: 1,
+      labelMargin: 15,
+      backgroundColor: 'transparent'
+    },
+    tooltip: true,
+    tooltipOpts: {
+      content: '%y',
+      shifts: {
+        x: -10,
+        y: 20
+      },
+      defaultTheme: false
+    }
+  });
+})();
+    </script>
+
+
+
+  </div>
+  <div class="col-sm-8" style="margin-top:40px;margin-left:-10px">
+    <h5>Alertas <small>(Exceto buraco na via)</small></h5>
+    <div class="chart chart-md" id="graf_alertas" style="height:200px"></div>
+      <?
+        unset($vetaux);
+        foreach($reports_alertas as $tipo => $qtd)
+        {
+          if($tipo != "HAZARD_ON_ROAD_POT_HOLE")
+          {
+            switch($tipo)
+            {
+               case "WEATHERHAZARD":                      $tipo = "Perigo";             break;
+               case "HAZARD_ON_ROAD":                     $tipo = "Perigo na via";      break;
+               case "HAZARD_ON_ROAD_CAR_STOPPED":         $tipo = "Veículo parado";     break;
+               case "HAZARD_ON_ROAD_CONSTRUCTION":        $tipo = "Via em construção";  break;
+               case "HAZARD_ON_ROAD_ICE":                 $tipo = "Gelo na via";        break;
+               case "HAZARD_ON_ROAD_OBJECT":              $tipo = "Objeto na via";      break;
+               case "HAZARD_ON_ROAD_TRAFFIC_LIGHT_FAULT": $tipo = "Semáforo queimado";         break;
+               case "HAZARD_WEATHER":                     $tipo = "Clima perigoso";            break;
+               case "HAZARD_WEATHER_FLOOD":               $tipo = "Inundação";                 break;
+               case "HAZARD_WEATHER_FOG":                 $tipo = "Neblina";                   break;
+               case "HAZARD_ON_SHOULDER_MISSING_SIGN":    $tipo = "Sinalização perdida";       break;
+               case "HAZARD_ON_SHOULDER_CAR_STOPPED":     $tipo = "Veículo parado sobre a via";break;
+               case "HAZARD_ON_SHOULDER_ANIMALS":         $tipo = "Animal na via";             break;
+
+            }
+            $vetaux[] = "['".$tipo."',".$qtd."]";
+          }
+        }
+        $reports_alertas_str = implode(",",$vetaux);
+        //echo $reports_alertas_str;
+      ?>
+
+      <script type="text/javascript">
+
+        var flotBarsData = [<?=$reports_alertas_str;?>];
+        (function() {
+    var plot = $.plot('#graf_alertas', [flotBarsData], {
+      colors: ['#FFC9C9'],
+      series: {
+        bars: {
+          show: true,
+          barWidth: 0.8,
+          align: 'center'
+        }
+      },
+      xaxis: {
+        mode: 'categories',
+        tickLength: 0
+      },
+      grid: {
+        hoverable: true,
+        clickable: true,
+        borderColor: 'rgba(0,0,0,0.1)',
+        borderWidth: 1,
+        labelMargin: 15,
+        backgroundColor: 'transparent'
+      },
+      tooltip: true,
+      tooltipOpts: {
+        content: '%y',
+        shifts: {
+          x: -10,
+          y: 20
+        },
+        defaultTheme: false
+      }
+    });
+  })();
+      </script>
+  </div>
+</div>
+<!----------------------------------------------------------------------------->
+
+
+
+
+
 
 										</div>
 									</div>
@@ -326,19 +339,19 @@ if(isset($_POST['filtro_data']))
 
 
 
-<div class="modal fade" id="modal_filtro" tabindex="-1" role="dialog" aria-labelledby="modal_filtro" aria-hidden="true">
+<div class="modal fade" id="waze_modal_filtro" tabindex="-1" role="dialog" aria-labelledby="waze_modal_filtro" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Filtros de pesquisa</h5>
       </div>
-      <form id="filtro" name="filtro" method="post" action="waze/index.php">
+      <form id="waze_form_filtro" name="waze_form_filtro" method="post" action="waze/index.php">
       <div class="modal-body">
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
                       <label for="filtro_data">Período:</label>
-                          <select id="filtro_data" name="filtro_data" class="form-control">
+                          <select id="waze_filtro_data" name="waze_filtro_data" class="form-control">
 
                              <?
                               for($a = 2017; $a <= $agora['ano']; $a++)
@@ -359,13 +372,15 @@ if(isset($_POST['filtro_data']))
                               }
                              ?>
                           </select>
+                          <input type="hidden" id="popup_text" value="Filtrando resultado.">
+                          <input type="hidden" id="popup_type" value="success">
                     </div>
                 </div>
               </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button type="button" class="btn btn-primary"   data-dismiss="modal">Filtrar</button>
+        <button type="submit" class="btn btn-primary"   data-dismiss="modal" id="bt_submit">Filtrar</button>
       </div>
      </form>
     </div>
@@ -378,9 +393,19 @@ if(isset($_POST['filtro_data']))
 	'use strict';
   (function() {
 
-    $('#modal_filtro').on('hidden.bs.modal', function (e) {
-        $("#filtro").submit();
-    })
+    $('#bt_submit').on('click', function(e) {
+         e.preventDefault();
+
+         $("#waze_modal_filtro").removeClass("in");
+         $(".modal-backdrop").remove();
+         $('body').removeClass('modal-open');
+         $('body').css('padding-right', '');
+         $("#waze_modal_filtro").hide();
+
+         $("#waze_form_filtro").submit();
+         return false;
+
+    });
 
     var plot = $.plot('#flotBasic', flotBasicData, {
       series: {

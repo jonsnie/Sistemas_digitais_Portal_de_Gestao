@@ -9,11 +9,9 @@
   }else {
     $filtro_data = now();
   }
-  $agora       = now();
 
-  $id = $_GET['id'];
-
-
+    $agora             = now();
+    $id                = $_GET['id'];
 
     $meses[1]['curto'] = "Jan";
     $meses[2]['curto'] = "Fev";
@@ -44,7 +42,7 @@
 
 
 
-    $filtro_sql = " EF.pubdate >= '".$filtro_data['ano']."-".$filtro_data['mes']."-01'";
+    $filtro_sql = " EF.pubdate BETWEEN '".$filtro_data['ano']."-".$filtro_data['mes']."-01' AND '".$filtro_data['ano']."-".$filtro_data['mes']."-".$filtro_data['ultimo_dia']."'";
     $txt_filtro = "Referência: ".$filtro_data['mes_txt_c']."/".$filtro_data['ano'];
 
     $sql  = "SELECT  EF.equipment,  EQ.address, EQ.id, EF.pubdate,
@@ -116,7 +114,8 @@
 									<div class="panel-body">
 
                     <?
-                      print_r_pre($_POST);
+                      //print_r_pre($_POST);
+                      //print_r_pre($filtro_data);
                     ?>
 										<div class="table-responsive">
                       <table class="table table-hover mb-none">
@@ -175,14 +174,14 @@
               									<div class="panel-body">
 
                               <?
-                                for($dia = 1; $dia <= $agora['ultimo_dia']; $dia++)
+                                for($dia = 1; $dia <= $filtro_data['ultimo_dia']; $dia++)
                                 {
                                   unset($valor);
-                                  $valor = $eqps[$nome_eqp]['contagem'][$agora['ano']."-".$agora['mes']."-".str_pad($dia,2,"0",STR_PAD_LEFT)];
+                                  $valor = $eqps[$nome_eqp]['contagem'][$filtro_data['ano']."-".$filtro_data['mes']."-".str_pad($dia,2,"0",STR_PAD_LEFT)];
                                   if($valor==""){$valor=0;}
                                   $vetor[] = "[".$dia.", ".$valor."]";
 
-                                  $legenda[] = "[".$dia.", '".$dia."/".$agora['mes']."']";
+                                  $legenda[] = "[".$dia.", '".$dia."/".$filtro_data['mes']."']";
                                 }
                                   $legenda_str = implode(",",$legenda);
                                   $vetor_str   = implode(",",$vetor);
@@ -241,13 +240,16 @@
                                           }
                                          ?>
                                       </select>
+                                      <input type="hidden" id="popup_text" value="Filtrando resultado.">
+                                      <input type="hidden" id="popup_type" value="success">
+
                                 </div>
                             </div>
                           </div>
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary"   data-dismiss="modal">Filtrar</button>
+                    <button type="submit" class="btn btn-primary"   data-dismiss="modal" id="bt_submit">Filtrar</button>
                   </div>
                  </form>
                 </div>
@@ -267,9 +269,17 @@
 
   (function() {
 
-    $('#modal_filtro').on('hidden.bs.modal', function (e) {
-        $("#filtro").submit();
-    })
+    $('#bt_submit').click(function(e) {
+        e.preventDefault();
+         $("#modal_filtro").removeClass("in");
+         $(".modal-backdrop").remove();
+         $('body').removeClass('modal-open');
+         $('body').css('padding-right', '');
+         $("#modal_filtro").hide();
+
+         $("#filtro").submit();
+        return false;
+    });
 
 
     var plot = $.plot('#flotBasic', flotBasicData, {
@@ -320,91 +330,8 @@
   })();
 
 
-  /*
-  $('.modal-basic').click(function() {
-    var id_remover = $(this).attr("remover_id");
 
 
-
-    $('.modal-basic').magnificPopup({
-      type: 'inline',
-  		fixedContentPos: false,
-  		fixedBgPos: true,
-  		overflowY: 'auto',
-  		closeBtnInside: true,
-  		preloader: false,
-  		midClick: true,
-  		removalDelay: 300,
-  		mainClass: 'my-mfp-slide-bottom',
-  		modal: true,
-      callbacks: {
-        beforeClose: function()
-        {
-            $.ajax({
-              method: "POST",
-              url: "usuarios/sqls.php",
-              data: { id: id_remover, acao: "remover" }
-            }).done(function( msg ) {
-                $("#"+id_remover).fadeOut("slow");
-              });
-
-        }
-      }
-  	});
-  });
-*/
-$(".modal-basic").click(function(){
-    var ID = $(this).attr('remover_id');
-    $('.modal-confirm').attr('remover_id',ID);
-});
-
-	$('.modal-basic').magnificPopup({
-    type: 'inline',
-		fixedContentPos: false,
-		fixedBgPos: true,
-		overflowY: 'auto',
-		closeBtnInside: true,
-		preloader: false,
-		midClick: true,
-		removalDelay: 300,
-		mainClass: 'my-mfp-slide-bottom',
-		modal: true
-	});
-
-  	$(document).on('click', '.modal-dismiss', function (e) {
-  		e.preventDefault();
-  		$.magnificPopup.close();
-      $('.modal-confirm').removeAttr('remover_id');
-  	});
-
-
-  	$(document).on('click', '.modal-confirm', function (e) {
-      var remover_id = $(this).attr('remover_id');
-      var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 15};
-      e.preventDefault();
-  		$.magnificPopup.close();
-
-      $.ajax({
-        method: "POST",
-        //url: "usuarios/sqls.php",
-        data: { id: remover_id, acao: "remover" }
-      }).done(function( msg ) {
-          //alert("REMOVIDO !!!! ID: "+remover_id);
-          $("#"+remover_id).fadeOut("slow");
-
-          var notice = new PNotify({
-                title: 'Sucesso',
-                text:  'Registro #'+remover_id+' removido.',
-                type:  'success',
-                addclass: 'stack-bottomright',
-                stack: stack_bottomright,
-                hide: true,
-                delay: 1000,
-                closer: true
-              });
-
-        });
-  	});
 
   }).apply( this, [ jQuery ]);
 </script>

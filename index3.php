@@ -67,42 +67,34 @@ margin-top: 50px;
 	</div>
 */ ?>
 	<div class="row">
-		<div class="col-sm">
-			<img style="" src="assets/images/logo.png">
+		<div class="col-sm-6 text-center">
+			<h4 style="margin-top:10px;color:white">Secretaria de Planejamento Urbano<br>e Desenvolvimento Sustentável</h4>
 		</div>
-		<div class="col-sm">
+		<div class="col-sm-6">
 			<img class="float-right" style="margin-top:10px" src="https://www.joinville.sc.gov.br/wp-content/uploads/2017/07/logoPMJ2x.png">
 		</div>
 	</div>
-	<div` class="row justify-content-center align-items-center">
+	<div class="row justify-content-center align-items-center">
 	    <div class="col-sm text-center">
-				<div class="row">
+				<div class="row" style="margin-top:-130px">
 						<div class="col-sm">
-								<h4 class="titulo">Mobilidade - Dados abertos</h4>
+								<h4 class="titulo text-warning"><b>Mobilidade - Dados abertos</b></h4>
 						</div>
 				</div>
 				<div class="row">
 						<div class="col-sm">
 												<div class="card">
-													<h5 class="card-header text-muted">Trânsito</h5>
+													<h5 class="card-header text-muted">Alertas de eventos de trânsito</h5>
 													<div class="card-body">
-													<h5 class="card-title"><b>Alertas de eventos de trânsito</b></h5>
 													<p class="card-text text-muted"><small>Alertas de incidentes e perigo no trânsitro na cidade de Joinville, relatório mensal agrupado dia a dia</small></p>
-													</div>
-													<div class="card-footer">
-													<a href="#" class="btn btn-outline-info">Acessar</a> <a href="#" class="btn btn-outline-info">Exemplo</a>
 													</div>
 												</div>
 						</div>
 						<div class="col-sm">
 											<div class="card">
-												<h5 class="card-header text-muted">Trânsito</h5>
+												<h5 class="card-header text-muted">Registros de congestionamentos</h5>
 												<div class="card-body">
-												<h5 class="card-title"><b>Registros de congestionamentos</b></h5>
 												<p class="card-text text-muted"><small>Eventos de congestionamento na cidade de Joinville, relatório mensal agrupado dia a dia</small></p>
-												</div>
-												<div class="card-footer">
-												<a href="#" class="btn btn-outline-info">Acessar</a> <a href="#" class="btn btn-outline-info">Exemplo</a>
 												</div>
 											</div>
 						</div>
@@ -111,27 +103,24 @@ margin-top: 50px;
 				<div class="row" style="margin-top:10px">
 						<div class="col-sm">
 												<div class="card">
-													<h5 class="card-header text-muted">Trânsito</h5>
+													<h5 class="card-header text-muted">Contador de tráfego</h5>
 													<div class="card-body">
-													<h5 class="card-title"><b>Contador de tráfego</b></h5>
 													<p class="card-text text-muted"><small>Contador de tráfego dos radares da cidade de Joinville, relatório mensal agrupado dia a dia</small></p>
-												</div>
-												<div class="card-footer">
-													<a href="#" class="btn btn-outline-info">Acessar</a> <a href="#" class="btn btn-outline-info">Exemplo</a>
 													</div>
 												</div>
 						</div>
 						<div class="col-sm">
 											<div class="card">
-												<h5 class="card-header text-muted">Trânsito</h5>
+												<h5 class="card-header text-muted">Acidentes</h5>
 												<div class="card-body">
-												<h5 class="card-title"><b>Acidentes</b></h5>
 												<p class="card-text text-muted"><small>Registro de acidentes na cidade de Joinville, relatório mensal agrupado dia a dia</small></p>
 											</div>
-											<div class="card-footer">
-												<a href="#" class="btn btn-outline-info">Acessar</a> <a href="#" class="btn btn-outline-info">Exemplo</a>
-												</div>
 											</div>
+						</div>
+				</div>
+				<div class="row" style="margin-top:10px">
+						<div class="col-sm">
+							<a href="index2.php?param=dados" class="btn btn-outline-warning btn-lg btn-block">Acessar</a>
 						</div>
 				</div>
 

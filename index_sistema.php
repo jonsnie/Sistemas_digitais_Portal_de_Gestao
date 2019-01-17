@@ -136,6 +136,7 @@
 <script>
 		(function( $ ) {
 			'use strict';
+
 			var stack_bar_top = {"dir1": "down", "dir2": "right", "push": "top", "spacing1": 0, "spacing2": 0};
 		<? if( $_SESSION['system_messages']['titulo'] != ""){ ?>
 					var notice = new PNotify({
@@ -180,16 +181,19 @@
 							if(typeof alvo == "undefined"){ $('#wrap').html(data);  }
 							else		  		   		  			  { $('#'+alvo).html(data); }
 							var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 15};
-							notice = new PNotify({
-								title: 'Sucesso',
-                text:  'Registro '+show_id+' atualizado !',
-                type:  'success',
-                addclass: 'stack-bottomright',
-                stack: stack_bottomright,
-                hide: true,
-                delay: 1000,
-                closer: true
-							});
+
+
+											notice = new PNotify({
+												title: 'Sucesso',
+				                text: $("#popup_text").val(),
+				                type: $("#popup_type").val(),
+				                addclass: 'stack-bottomright',
+				                stack: stack_bottomright,
+				                hide: true,
+				                delay: 1000,
+				                closer: true
+											});
+							
 						},
             error: function(){ }
 					});

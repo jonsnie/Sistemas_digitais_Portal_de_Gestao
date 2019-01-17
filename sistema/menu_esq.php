@@ -24,7 +24,7 @@
           						<li class="nav-parent">
           						    <a>Radares</a>
           							  <ul class="nav nav-children">
-              								  <li><a href="#" ic-get-from="radar/index.php"      ic-target="#wrap">Equipamentos</a></li>
+              								  <li><a style="cursor:pointer" ic-get-from="radar/index.php"      ic-target="#wrap">Equipamentos</a></li>
           				        </ul>
           						</li>
                       <li class="nav-parent">
