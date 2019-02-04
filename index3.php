@@ -132,9 +132,9 @@ margin-top: 50px;
 				<div class="row" style="min-height:600px">
 						<div class="col-sm">
 								<h4 class="titulo">Aplicações</h4>
-								<a href="index2.php?param=rot" class="btn btn-outline-success btn-lg btn-block">Registro de ocorrência de trânsito</a>
-								<a href="index2.php?param=smart" class="btn btn-outline-success btn-lg btn-block">Smart Mobility</a>
-								<a href="index2.php?param=portal" class="btn btn-outline-success btn-lg btn-block">Portal de gestão</a>
+								<a href="index2.php?param=rot" class="btn btn-danger btn-lg btn-block">Registro de ocorrência de trânsito</a>
+								<a href="index2.php?param=smart" class="btn btn-success btn-lg btn-block">Smart Mobility</a>
+								<a href="index2.php?param=portal" class="btn btn-primary btn-lg btn-block">Portal de gestão</a>
 						</div>
 				</div>
 	    </div>
