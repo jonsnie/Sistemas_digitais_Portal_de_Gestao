@@ -180,20 +180,6 @@
 							if($("#id").val() != ""){ var show_id = '#'+$("#id").val();}
 							if(typeof alvo == "undefined"){ $('#wrap').html(data);  }
 							else		  		   		  			  { $('#'+alvo).html(data); }
-							var stack_bottomright = {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 15};
-
-
-											notice = new PNotify({
-												title: 'Sucesso',
-				                text: $("#popup_text").val(),
-				                type: $("#popup_type").val(),
-				                addclass: 'stack-bottomright',
-				                stack: stack_bottomright,
-				                hide: true,
-				                delay: 1000,
-				                closer: true
-											});
-							
 						},
             error: function(){ }
 					});

@@ -53,13 +53,15 @@
     echo "<div class='col-md-12'>
     								<section class='panel'>
                     <header class='panel-heading'>
-                    Realizar primeiro de cadastro de usuário:
+                      Abertura de ocorrência:
                       <div class='panel-actions'>
-                        <button type='button' class='mb-xs mt-xs mr-xs btn btn-xs btn-primary'><i class='fa fa-user-plus'></i> Novo Usuário</button>
+                      <a href='#' ic-get-from='oct/FORM.php' ic-target='#wrap'>
+                        <button type='button' class='mb-xs mt-xs mr-xs btn btn-xs btn-danger'><i class='fa fa-exclamation-triangle'></i> Abrir nova ocorrência</button>
+                      </a>
                       </div>
                     </header>
                       <div class='panel-body'>
-                        <div class='alert alert-warning col-md-6 col-md-offset-3 text-center'><strong>Aviso: </strong> Nenhum usuário cadastrado no sistema.</div>
+                        <div class='alert alert-warning col-md-6 col-md-offset-3 text-center'><strong>Aviso: </strong> Nenhuma ocorrência em aberto no sistema.</div>
                       </div>
                     </section>
           </div>";
