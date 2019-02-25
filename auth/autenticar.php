@@ -15,7 +15,7 @@ if(isset($username) && isset($password)){
 		$d = pg_fetch_assoc($res);
 		if($d['active'] == 't' && $d['in_ativaction'] == 'f')
 		{
-			$_SESSION = $d;	
+			$_SESSION = $d;
 			$_SESSION['auth'] = "true";
 
 		}
@@ -30,7 +30,7 @@ print_r_pre($d);
 exit();
 */
 
-if($_SESSION['auth']=="true"){ header("Location: ../index_sistema.php"); }
+if($_SESSION['auth']=="true"){ header("Location: ../index_sistema.php?modulo=".$modulo); }
 else 								 			   { header("Location: ../index.php");         }
 
 

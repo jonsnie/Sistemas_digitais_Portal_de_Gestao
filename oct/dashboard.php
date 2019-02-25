@@ -19,7 +19,7 @@
       <h2><i class="fa fa-bar-chart"></i> Dashboard</h2>
       <div class="right-wrapper pull-right" style='margin-right:15px;'>
         <ol class="breadcrumbs">
-          <li><a href="index_sistema.php"><i class="fa fa-home"></i></a></li>
+          <li><a href="index_sistema.php" ajax="false"><i class="fa fa-home"></i></a></li>
           <li><span class='text-muted'>Aplicações</span></li>
           <li><span class='text-muted'>Ocorrências de trânsito</span></li>
           <li><span class='text-muted'>Dashboard</span></li>
@@ -34,6 +34,27 @@
       <div class="row">
         <div class="col-sm-12">
         <?
+            /*
+            Array
+            (
+                [dia] => 11
+                [mes] => 02
+                [ano] => 2019
+                [hora] => 13
+                [min] => 21
+                [seg] => 07
+                [data] => 11/02/2019
+                [datasrv] => 2019-02-11
+                [hm] => 13:21
+                [hms] => 13:21:07
+                [dthm] => 11/02/2019 13:21
+                [dthms] => 11/02/2019 13:21:07
+                [mkt] => 1549898467
+                [ultimo_dia] => 28
+                [mes_txt_c] => Fev
+                [mes_txt] => Fevereiro
+            )
+            */
             $sql = "SELECT
                     	uuid, type, subtype,
                     	date_part('day',pub_utc_date) as dia,
@@ -41,7 +62,7 @@
                     	date_part('year',pub_utc_date) as ano,
                     	count(*)
                     	FROM waze.alerts
-                    	WHERE pub_utc_date BETWEEN '2018-12-01 00:00:00.000' AND '2018-12-31 23:59:59.999'
+                    	WHERE pub_utc_date BETWEEN '".$agora["ano"]."-".$agora["mes"]."-01 00:00:00.000' AND '".$agora["ano"]."-".$agora["mes"]."-".$agora["ultimo_dia"]." 23:59:59.999'
                     	AND type = 'ACCIDENT'
                     	GROUP BY type, subtype, uuid,	date_part('month',pub_utc_date),	date_part('year',pub_utc_date), date_part('day',pub_utc_date)
                       ORDER BY date_part('day',pub_utc_date) ASC";
@@ -100,7 +121,8 @@
             $sql = "SELECT count(*) as qtd
                     FROM sepud.oct_events EV
                     WHERE
-                    EV.DATE BETWEEN '2018-12-01 00:00:00' AND '2018-12-31 23:59:59'";
+                    EV.DATE BETWEEN '".$agora["ano"]."-".$agora["mes"]."-01 00:00:00'
+                                AND '".$agora["ano"]."-".$agora["mes"]."-".$agora["ultimo_dia"]." 23:59:59'";
             $res = pg_query($conn_neogrid,$sql) or die("Error ".__LINE__);
             $d   = pg_fetch_assoc($res);
 

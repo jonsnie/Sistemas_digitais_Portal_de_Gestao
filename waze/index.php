@@ -112,39 +112,31 @@ if(isset($_POST['waze_filtro_data']))
       <!--<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>-->
     </div>
   </header>
-
-<?
-
-
-?>
 <div class="col-md-12">
 								<section class="panel">
 									<header class="panel-heading">
                     Mês de referência: <b><?=$filtro_data['mes_txt']."/".$filtro_data['ano'];?></b>
                     <div class="panel-actions">
+<!--
                       <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary" data-toggle="modal" data-target="#waze_modal_filtro">
                         Filtros
                       </button>
+-->
 									  </div>
                   </header>
 									<div class="panel-body">
-
-
-
-
-
   <div class="row">
-    <div class="col-sm-6" style="margin-top:160px;margin-left:10px">
+    <div class="col-sm-6" style="margin-left:10px">
         <h4>Informações adicionais:</h4>
         <table class="table">
           <thead><tr><th colspan="2">Descrição</th></thead>
           <tbody>
             <tr>
-                <td>Alertas de buraco na via</td>
+                <td>Registro de alertas de buraco na via:</td>
                 <td class="text-danger"><strong><?=number_format($reports_alertas['HAZARD_ON_ROAD_POT_HOLE'],0,'','.');?></strong></td>
             </tr>
             <tr>
-                <td>Última importação</td>
+                <td>Última sincronização:</td>
                 <td>
                     <? $sql = "SELECT MAX(date_created) as dataupd FROM waze.data_files";
                        $res = pg_query($conn_neogrid,$sql)or die("Erro ".__LINE__);
@@ -157,11 +149,12 @@ if(isset($_POST['waze_filtro_data']))
         </table>
     </div>
     <div class="col-sm-6" style="margin-top:160px;margin-left:-10px">
+<!--
           Alertas ATIVOS:
-
           "SELECT type, subtype, count(*) as qtd
           FROM alerts WHERE datafile_id = (SELECT id FROM data_files ORDER BY id DESC LIMIT 1)
           GROUP BY type, subtype;"
+-->
     </div>
   </div>
 
@@ -331,6 +324,7 @@ $reports_tipo_str = implode(",",$vetaux);
 
 										</div>
 									</div>
+                  <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
 								</section>
 							</div>
 </section>

@@ -39,6 +39,7 @@ function now($ret = "todos"){
 	$data['seg']        = date('s',$mkt);
 	$data['data']       = $data['dia'].'/'.$data['mes'].'/'.$data['ano'];
 	$data['datasrv']    = $data['ano'].'-'.$data['mes'].'-'.$data['dia'];
+  $data['datatimesrv']= $data['ano'].'-'.$data['mes'].'-'.$data['dia']." ".$data['hora'].':'.$data['min'].':'.$data['seg'];
 	$data['hm']         = $data['hora'].':'.$data['min'];
 	$data['hms']        = $data['hora'].':'.$data['min'].':'.$data['seg'];
 	$data['dthm']       = $data['data']." ".$data['hm'];

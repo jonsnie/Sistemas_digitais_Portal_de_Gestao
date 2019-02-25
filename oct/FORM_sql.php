@@ -1,4 +1,5 @@
 <?
+    error_reporting(E_ALL);
     session_start();
     require_once("../libs/php/funcoes.php");
     require_once("../libs/php/conn.php");
@@ -7,14 +8,9 @@
 
     $datafinal = $data." ".$hora;
 
+
     if($acao == "inserir" && $userid != "")
     {
-      if(isset($_POST['condicoes']))
-      {
-        $condicoes = "'".json_encode(array("condicoes" => $_POST['condicoes']))."'";
-      }else {
-        $condicoes = "Null";
-      }
 
         $sql = "INSERT INTO sepud.oct_events
                     (date,
@@ -25,8 +21,7 @@
                      id_event_type,
                      status,
                      victim_inform,
-                     id_user,
-                     event_conditions)
+                     id_user)
               VALUES ('".$datafinal."',
                       '".$description."',
                       '".$endereco."',
@@ -35,8 +30,7 @@
                       '".$tipo_oc."',
                       'Em deslocamento',
                       '".$victim_inform."',
-                      '".$userid."',
-                         $condicoes) returning id";
+                      '".$userid."') returning id";
 
         $res = pg_query($sql) or die("Erro ".__LINE__);
         $aux = pg_fetch_assoc($res);
@@ -47,19 +41,21 @@
 
     if($acao == "atualizar" && $userid != "" && $id != "")
     {
-/*
-      echo "<pre class='text-center'>";
-        print_r($_POST);
-      echo "</pre>";
-*/
-      if(isset($_POST['condicoes']))
-      {
-        $condicoes = "'".json_encode(array("condicoes" => $_POST['condicoes']))."'";
-      }else {
-        $condicoes = "Null";
-      }
+        if(isset($_POST['condicoes']))
+        {
+          $sqlCond = "DELETE FROM sepud.oct_rel_events_event_conditions WHERE id_events = '".$id."';";
+          for($i = 0;$i < count($_POST['condicoes']); $i++)
+          {
+              $sqlCond .= " INSERT INTO sepud.oct_rel_events_event_conditions (id_events, id_event_conditions) VALUES ('".$id."', '".$_POST['condicoes'][$i]."');";
+          }
+        }
 
-      echo "<div class='text-center'><hr>".$condicoes."<hr></div>";
+/*
+        echo "<div class='text-center'>
+                  <hr>".$sqlCond."<hr>
+                  <a href='oct/FORM.php?id=".$id."'>Voltar</a>
+              </div>";
+*/
 
         $sql = "UPDATE sepud.oct_events SET
                      date               = '".$datafinal."',
@@ -69,15 +65,14 @@
                      geoposition        = '".$coordenadas."',
                      id_event_type      = '".$tipo_oc."',
                      status             = '".$status."',
-                     victim_inform      = '".$victim_inform."',
-                     event_conditions   =    $condicoes
+                     victim_inform      = '".$victim_inform."'
                WHERE id                 = '".$id."'";
 
-        pg_query($sql) or die("Erro ".__LINE__);
+        pg_query($sqlCond.$sql) or die("Erro ".__LINE__);
+
         header("Location: FORM.php?id=".$id);
         exit();
     }
-
 
 
 if($_GET['status_acao'] == "atualizar" && $_GET['id'] != "")

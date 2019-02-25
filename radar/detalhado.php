@@ -95,7 +95,7 @@
       <ol class="breadcrumbs">
         <li><a href="index_sistema.php"><i class="fa fa-home"></i></a></li>
         <li><span class='text-muted'>Radares</span></li>
-        <li><span class=''><a href='#' ic-get-from='radar/index.php' ic-target='#wrap'> Equipamentos</a></span></li>
+        <li><span class=''><a href='radar/index.php'> Equipamentos</a></span></li>
         <li><span class='text-muted'>Visualização</span></li>
       </ol>
       <!--<a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>-->

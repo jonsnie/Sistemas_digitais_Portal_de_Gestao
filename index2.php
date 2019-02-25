@@ -25,6 +25,12 @@
 				$titulo    = "Dados abertos";
 				$subtitulo = "Mobilidade Urbana";
 				break;
+			case "eri":
+					$param 		 = "estacionamento";
+					$titulo    = "Estacionamento";
+					$subtitulo = "Rotativo Gratuito";
+					$modulo    = "eri";
+					break;
 			default:
 				header("Location: index3.php");
 				break;
@@ -40,6 +46,7 @@
 <html>
 <head>
 	<title>Portal Digital</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
    <!--Made with love by Mutiullah Samim -->
 
 	<!--Bootsrap 4 CDN-->
@@ -192,6 +199,7 @@ text-decoration: none;
 					</div>
 -->
     			<div class="form-group">
+						<input type="hidden" name="modulo" value="<?=$modulo;?>" />
 						<input type="submit" value="Entrar" class="btn float-right login_btn">
 						&nbsp;<a href="/" class="btn btn-outline-warning links">Voltar</a>
 					</div>

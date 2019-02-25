@@ -30,14 +30,15 @@
                 EV.active,
                 EV.address_reference,
                 U.company,
-                U.company_acron
+                U.company_acron,
+                (SELECT COUNT ( * ) FROM sepud.oct_victim WHERE id_events = EV.ID) as vitimas_encontradas
           FROM
                 sepud.oct_events AS EV
           JOIN  sepud.oct_event_type AS EVT ON EV.id_event_type = EVT.id
           JOIN  sepud.users AS U ON U.id = EV.id_user
           WHERE
-                DATE BETWEEN '2018-12-01 00:00:00' AND '2018-12-31 23:59:59'
-                OR EV.active = 't'";
+              --DATE BETWEEN '2018-12-01 00:00:00' AND '2018-12-31 23:59:59' OR
+                EV.active = 't'";
   $rs  = pg_query($conn_neogrid,$sql);
   $total_oc = 0;
   while($d = pg_fetch_assoc($rs))
@@ -55,7 +56,7 @@
                     <header class='panel-heading'>
                       Abertura de ocorrência:
                       <div class='panel-actions'>
-                      <a href='#' ic-get-from='oct/FORM.php' ic-target='#wrap'>
+                      <a href='oct/FORM.php'>
                         <button type='button' class='mb-xs mt-xs mr-xs btn btn-xs btn-danger'><i class='fa fa-exclamation-triangle'></i> Abrir nova ocorrência</button>
                       </a>
                       </div>
@@ -73,7 +74,7 @@
 								<section class="panel">
 									<header class="panel-heading">
                     <div class="panel-actions" style='margin-top:-12px'>
-                      <a href="#" ic-get-from="oct/FORM.php" ic-target="#wrap">
+                      <a href="oct/FORM.php">
                         <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-danger"><i class="fa fa-exclamation-triangle"></i> Abrir nova ocorrência</button>
                       </a>
                       <!--<a href="#" ic-get-from="sistema/logs.php" ic-target="#wrap" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary"><i class="fa fa-user-plus"></i> Novo usuário !</a>-->
@@ -112,27 +113,25 @@
 
     $dt_abertura = formataData($dados[$i]['date'],1);
     $dt_chegada  = formataData($dados[$i]['arrival'],1);
+
+
+
     echo "<tr id='".$dados[$i]['id']."'>";
     echo "<td><b>".$dados[$i]['id']."</b></td>";
     echo "<td>".$dados[$i]['event_type']."</td>";
     echo "<td>".$dt_abertura."</td>";
     echo "<td class='text-center'>".$dt_chegada."</td>";
     echo "<td class='text-center'>".($dados[$i]['victim_inform']!=""?$dados[$i]['victim_inform']:"- - -")."</td>";
-    echo "<td class='text-center'>".($dados[$i]['victim_found']!=""?$dados[$i]['victim_found']:"- - -")."</td>";
+    //echo "<td class='text-center'>".($dados[$i]['victim_found']!=""?$dados[$i]['victim_found']:"- - -")."</td>";
+    echo "<td class='text-center'>".($dados[$i]['vitimas_encontradas']!=""?$dados[$i]['vitimas_encontradas']:"-")."</td>";
     echo "<td class='text-center'>".$dados[$i]['company_acron']."</td>";
     echo "<td class='text-center'>".$dados[$i]['status']."</td>";
 
 
 
     echo "<td class='actions text-center'>
-
-            <a href='#'  ic-get-from='oct/FORM.php?id=".$dados[$i]['id']."' ic-target='#wrap'>
-            <!--<i class='fa fa-pencil'></i>-->
-              <button type='button' class='mb-xs mt-xs mr-xs btn btn-xs btn-default'><i class='fa fa-pencil'></i></button>
-            </a>
-
+            <a href='oct/FORM.php?id=".$dados[$i]['id']."' class='mb-xs mt-xs mr-xs btn btn-xs btn-default loading2'><i class='fa fa-pencil'></i></a>
           </td>";
-
     echo "</tr>";
   }
 
@@ -178,6 +177,9 @@
 									</div>
 </section>
 <script>
+// $(".loading").click(function(event){ $(this).addClass("disabled").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde</small>");});
+// $(".loading2").click(function(event){ $(this).addClass("disabled").html("<i class=\"fa fa-spinner fa-spin\"></i>");});
+
 (function( $ ) {
 
 	'use strict';

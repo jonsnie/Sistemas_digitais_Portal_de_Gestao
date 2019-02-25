@@ -1,6 +1,7 @@
 <?
 	error_reporting(0);
 	session_start();
+	require("libs/php/sessao.php");
 
 
 ?>
@@ -61,7 +62,8 @@
 		<script src="assets/vendor/modernizr/modernizr.js"></script>
 
 
-
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 
 
 	</head>
@@ -69,9 +71,19 @@
 		<section class="body">
 					<? require_once("sistema/menu_top.php"); ?>
 					<div class="inner-wrapper">
-								  <? require_once("sistema/menu_esq.php"); ?>
+								  <?
+										//if($_GET['modulo'] != "eri"){
+											require_once("sistema/menu_esq.php");
+										//}
+									?>
 								<div id="wrap">
-									<? require_once("sistema/conteudo.php"); ?>
+									<?
+									 	//if($_GET['modulo'] != "eri"){
+											require_once("sistema/conteudo.php");
+									//	}else {
+										//	require_once("eri/index.php");
+									//	}
+									?>
 								</div>
 					</div>
 		</section>
@@ -153,6 +165,26 @@
 					});
 		<? } ?>
 		}).apply( this, [ jQuery ]);
+
+
+		$(document.body).on('click', 'a' ,function(event)
+		{
+			var url    = $(this).attr('href');
+			var ajax   = $(this).attr('ajax');
+			var alvo   = $(this).attr('alvo');
+
+			if(url != "#" && (typeof ajax === "undefined"))
+			{
+				//$('#wrap').load(url);
+				//$('#wrap').load(url,function(){}).hide().fadeIn();
+				$('#wrap').load(url);
+				return false;
+			}
+		});
+
+
+
+
 
 
 		$(document.body).on('submit', 'form', function(event)

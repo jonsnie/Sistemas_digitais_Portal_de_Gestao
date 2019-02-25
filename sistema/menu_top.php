@@ -219,13 +219,13 @@ if($_SESSION['tem_foto'] == "sim")
         <ul class="list-unstyled">
           <li class="divider"></li>
           <li>
-            <a role="menuitem" tabindex="-1" href='#' ic-get-from='usuarios/FORM.php?id=<?=$_SESSION['userid'];?>' ic-target='#wrap'><i class="fa fa-user"></i> Meu perfil</a>
+            <a role="menuitem" tabindex="-1" href='#'><i class="fa fa-user"></i> Meu perfil</a>
           </li>
           <li>
             <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="fa fa-lock"></i> Bloquear tela</a>
           </li>
           <li>
-            <a role="menuitem" tabindex="-1" href="auth/logout.php"><i class="fa fa-power-off"></i> Logout</a>
+            <a role="menuitem" tabindex="-1" href="auth/logout.php" ajax="false"><i class="fa fa-power-off"></i> Logout</a>
           </li>
         </ul>
       </div>

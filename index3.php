@@ -12,6 +12,7 @@
 <html>
 <head>
 	<title>Sistemas Digitais</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
    <!--Made with love by Mutiullah Samim -->
 
 	<!--Bootsrap 4 CDN-->
@@ -76,7 +77,7 @@ margin-top: 50px;
 	</div>
 	<div class="row justify-content-center align-items-center">
 	    <div class="col-sm text-center">
-				<div class="row" style="margin-top:-130px">
+				<div class="row" >
 						<div class="col-sm">
 								<h4 class="titulo text-warning"><b>Mobilidade - Dados abertos</b></h4>
 						</div>
@@ -133,6 +134,7 @@ margin-top: 50px;
 						<div class="col-sm">
 								<h4 class="titulo">Aplicações</h4>
 								<a href="index2.php?param=rot" class="btn btn-danger btn-lg btn-block">Registro de ocorrência de trânsito</a>
+								<a href="index2.php?param=eri" class="btn btn-warning btn-lg btn-block"><span style="color:white">Estacionamento Rotativo Gratuito</span></a>
 								<a href="index2.php?param=smart" class="btn btn-success btn-lg btn-block">Smart Mobility</a>
 								<a href="index2.php?param=portal" class="btn btn-primary btn-lg btn-block">Portal de gestão</a>
 						</div>

@@ -65,11 +65,11 @@
                       </a>
 -->
                       <? if($_GET['filtro']=="dia"){   ?>
-                                            <a href="#" ic-get-from="radar/index.php" ic-target="#wrap">
+                                            <a href="radar/index.php">
                                               <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary"><i class="fa fa-search"></i> Acumulado mensal</button>
                                             </a>
                       <? }else{ ?>
-                                            <a href="#" ic-get-from="radar/index.php?filtro=dia" ic-target="#wrap">
+                                            <a href="radar/index.php?filtro=dia">
                                               <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary"><i class="fa fa-search"></i> Último dia</button>
                                             </a>
                       <? } ?>
@@ -125,7 +125,7 @@ if(isset($eqps))
     echo "<td class='text-center'>".number_format($info['contador_veiculos'],0,'','.')."</td>";
 
     echo "<td class='actions text-center'>
-            <a style='cursor:pointer' ic-get-from='radar/detalhado.php?id=".$info['id']."' ic-target='#wrap'>
+            <a style='cursor:pointer' href='radar/detalhado.php?id=".$info['id']."'>
             <i class='fa fa-eye'></i>
             </a>
             <!--<a href='#modalRemover' class='delete-row modal-basic' remover_id='".$d['id']."'><i class='fa fa-trash-o'></i></a>-->
