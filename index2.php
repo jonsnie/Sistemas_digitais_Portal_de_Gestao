@@ -9,27 +9,31 @@
 				$param 		 = "portal";
 				$titulo    = "Portal";
 				$subtitulo = "Gestão dos sistemas digitais";
+				$modulo    = "Portal";
 				break;
 			case "rot":
 				$param     = "rot";
 				$titulo    = "ROT";
 				$subtitulo = "Registro de Ocorrências de Trânsitos";
+				$modulo    = "ROT";
 				break;
 			case "smart":
 				$param 		 = "smart";
 				$titulo    = "SmartMobility";
 				$subtitulo = "Aplicações";
+				$modulo    = "Smartmobility";
 				break;
 			case "dados":
 				$param 		 = "dados";
 				$titulo    = "Dados abertos";
 				$subtitulo = "Mobilidade Urbana";
+				$modulo    = "Opendata";
 				break;
 			case "eri":
 					$param 		 = "estacionamento";
 					$titulo    = "Estacionamento";
 					$subtitulo = "Rotativo Gratuito";
-					$modulo    = "eri";
+					$modulo    = "ERI";
 					break;
 			default:
 				header("Location: index3.php");

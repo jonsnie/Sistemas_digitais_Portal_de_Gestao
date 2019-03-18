@@ -8,10 +8,15 @@
   if($id != "")
   {
 
-      $sql   = "SELECT U.name, U.company, U.company_acron, SP.*
-                FROM 	sepud.eri_schedule_parking SP
-                JOIN  sepud.users U ON U.id = SP.id_user
-                WHERE SP.id =  '".$id."'";
+      $sql   = "SELECT
+                  	U.name, U.id_company,
+                  	C.name as company_name, C.acron as company_acron,
+                  	SP.*
+                  FROM sepud.eri_schedule_parking SP
+                  	JOIN sepud.users   U ON U.id = SP.id_user
+                  	JOIN sepud.company C ON C.id = U.id_company
+                  WHERE
+                  	SP.id = '".$id."'";
       $res   = pg_query($conn_neogrid,$sql)or die("Error ".__LINE__);
       $dados = pg_fetch_assoc($res);
 
@@ -39,14 +44,16 @@
       if($dados['closed']=="t")  { $class = "text-primary"; $diff = floor((strtotime($dados['closed_timestamp'])   - strtotime($dados['timestamp']))/60); $txtstatus="";}
       if($dados['notified']=="t"){ $class = "text-dark";    $diff = floor((strtotime($dados['notified_timestamp']) - strtotime($dados['timestamp']))/60); $txtstatus="";}
 
-
+      logger("Acesso","ERG - Registro",$txt_bread.", Placa do veículo: ".$dados['licence_plate']);
 
   }else{
       $acao                   = "inserir";
       $dados['status']        = "Novo registro";
       $dados['company_acron'] = $_SESSION['company_acron'];
-      $dados['company']       = $_SESSION['company'];
+      $dados['company_name']  = $_SESSION['company_name'];
+      $dados['name']          = $_SESSION['name'];
       $txt_bread = "Novo registro";
+      logger("Acesso","ERG - Registro","Novo registro");
 
   }
 ?>
@@ -237,7 +244,7 @@
       ?>
 
     </footer>
-    <h5 class="text-center"><span class="text-muted"></span><strong><?=$dados['name']?></strong><br><small><?=$dados['company_acron'];?> - <?=$dados['company'];?></small></h5>
+    <h5 class="text-center"><span class="text-muted"></span><strong><?=$dados['name']?></strong><br><small><?=$dados['company_acron'];?> - <?=$dados['company_name'];?></small></h5>
 
 
     </section>
@@ -245,7 +252,7 @@
 </form>
 <script>
 
-
+$(document).ready(function() { $('#id_parking').select2();});
 
 $('#licence_plate').keyup(function () {
     $(this).val( $(this).val().toUpperCase() );

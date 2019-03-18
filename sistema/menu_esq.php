@@ -91,7 +91,10 @@
               <li><a href="#" ic-get-from="#" ic-target="#wrap">Variaveis de sistema</a></li>
               <li><a href="#" ic-get-from="#" ic-target="#wrap">Logs do sistema</a></li>
 -->
+<? if($_SESSION["id"]==1){?>
+              <li><a href="sistema/logviewer.php">Logs do sistema</a></li>
               <li><a href="sistema/teste.php">Desenvolvimento</a></li>
+<? } ?>
             </ul>
           </li>
         </ul>

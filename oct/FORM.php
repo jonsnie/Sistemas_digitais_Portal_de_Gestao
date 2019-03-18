@@ -33,6 +33,8 @@
       $hora = $aux[1];
       $txt_bread = "Ocorrência n.".$id;
 
+      logger("Acesso","OCT", "Ocorrência n.".$id);
+
   }else{
       $acao                   = "inserir";
       $dados['status']        = "Nova ocorrência";
@@ -60,7 +62,7 @@
         <ol class="breadcrumbs">
           <li><a href="index_sistema.php"><i class="fa fa-home"></i></a></li>
           <li><span class='text-muted'>Aplicações</span></li>
-          <li><a href='oct/index.php'>Ocorrências de trânsito</a></li>
+          <li><a href='oct/index.php?filtro_data=<?=$_GET['filtro_data'];?>'>Ocorrências de trânsito</a></li>
           <li><span class='text-muted'><?=$txt_bread;?></span></li>
         </ol>
       </div>
@@ -123,10 +125,30 @@
 
 
             <div class="row">
-                  <div class="col-sm-8">
+
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                <label class="control-label">Logradouro:</label>
+                    <select id="id_street" name="id_street" class="form-control select2" style="width: 100%; height:100%">
+                      <option value="">- - -</option>
+                      <?
+                        $sql = "SELECT * FROM sepud.streets ORDER BY name ASC";
+                        $res = pg_query($sql)or die();
+                        while($s = pg_fetch_assoc($res))
+                        {
+                          if($dados["id_street"] == $s["id"]){ $sel = "selected";}else{$sel="";}
+                          echo "<option value='".$s['id']."' ".$sel.">".$s['name']."</option>";
+                        }
+                      ?>
+                    </select>
+               </div>
+              </div>
+
+                  <div class="col-sm-2">
                     <div class="form-group">
-                    <label class="control-label">Endereço:</label>
-                        <input type="text" id="endereco" name="endereco" class="form-control" value="<?=$dados['address_reference'];?>">
+                    <label class="control-label">Numero:</label>
+                        <input type="number" id="street_number" name="street_number" class="form-control" value="<?=$dados['street_number'];?>">
                    </div>
                   </div>
 
@@ -210,7 +232,7 @@
                             <header class="panel-heading">
                               <div class="panel-actions" style="margin-top:-10px">
                                   <div class="btn-group">
-                                      <a href="oct/FORM_providencias.php?id=<?=$id;?>"><button type="button" class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-plus-square"></i> Providências</button></a>
+                                      <a href="oct/FORM_providencias.php?id=<?=$id;?>"><button type="button" class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-file-powerpoint-o"></i> <sup><i class="fa fa-plus"></i></sup> Providências</button></a>
                                   </div>
                               </div>
                               <h2 class="panel-title">Providências:</h2>
@@ -338,8 +360,8 @@
             								<header class="panel-heading">
             									<div class="panel-actions" style="margin-top:-10px">
                                   <div class="btn-group">
-                  										<a href="oct/FORM_veiculo.php?id=<?=$id;?>"><button type="button" class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-car"></i> Veículos</button></a>
-                                      <a href="oct/FORM_vitima.php?id=<?=$id;?>"><button type="button"  class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-user"></i> Vítimas/Envolvidos</button></a>
+                  										<a href="oct/FORM_veiculo.php?id=<?=$id;?>"><button type="button" class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-car"></i> <sup><i class="fa fa-plus"></i></sup> Veículos</button></a>
+                                      <a href="oct/FORM_vitima.php?id=<?=$id;?>"><button type="button"  class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-user"></i> <sup><i class="fa fa-plus"></i></sup> Vítimas/Envolvidos</button></a>
                                   </div>
             									</div>
             									<h2 class="panel-title">Envolvidos:</h2>
@@ -486,7 +508,67 @@
               <hr>
             </div>
           </div>
+
+
 <? } ?>
+
+
+
+<div class="row">
+    <div class="col-sm-12">
+
+
+<? if($acao == "atualizar"){
+
+  $sql = "SELECT * FROM sepud.oct_rel_events_images WHERE id_events = '".$id."' ORDER BY id DESC";
+  $res = pg_query($sql)or die("Erro ".__LINE__);
+
+?>
+
+      <section class="panel panel-featured panel-featured-primary">
+        <header class="panel-heading">
+          <h4><span class="text-primary">Fotos:</h4>
+          <div class="panel-actions">
+            <button id="bt_upload_imgs" type="button" class="mb-xs mt-xs mr-xs btn  btn-default"><i class="fa fa-camera"></i> <sup><i class="fa fa-plus"></i></sup></button>
+            <input type="file" id="input_img_files" name="files[]" multiple="multiple" style="display:none" />
+
+            <? if($_SESSION["id"]==1 && pg_num_rows($res)){   ?>
+                <button id="bt_ver_imgs" type="button" class="mb-xs mt-xs mr-xs btn  btn-default" data-toggle='modal' data-target='#modalFotos'><i class="fa fa-image"></i> <sup><i class="fa fa-eye"></i></sup></button>
+            <? } ?>
+          </div>
+        </header>
+        <div class="panel-body">
+          <div class="row">
+              <div class="col-sm-12 text-center">
+                <?
+
+                    if(pg_num_rows($res))
+                    {
+                      while($f = pg_fetch_assoc($res))
+                      {
+                        echo  "<img src='oct/uploads/".$id."/".$f['image']."' style='padding:2px; width:100px' />";
+                        $arqs_imgs[] = "oct/uploads/".$id."/".$f['image'];
+                      }
+
+                    }else {
+                      echo "<div class='text-center' style='margin-bottom:20px'><i class='fa fa-camera fa-5x text-muted'></i></div>";
+                    }
+                ?>
+
+
+              </div>
+          </div>
+       </div>
+       <footer class="panel-footer text-right">
+         <span id="msg" class="text-muted"><?=pg_num_rows($res);?> foto(s)</span>
+       </footer>
+     </section>
+<? } ?>
+
+    </div>
+</div>
+
+
             <!-- ========================================================= -->
           </div><!--<div class="col-sm-4"> FORM LATERAL-->
         </div><!--<div class="row">-->
@@ -499,15 +581,19 @@
           <input type="hidden" name="userid" value="<?=$_SESSION['id']?>">
           <input type="hidden" name="acao"   value="<?=$acao;?>">
           <input type="hidden" name="id"     value="<?=$id;?>">
+
       <?
           if($acao == "inserir")
           {
+            echo "<a href='oct/index.php?filtro_data=".$_GET['filtro_data']."' class='btn btn-default loading'>Voltar</a> ";
             echo "<button id='bt_inserir_oc' type='submit' class='btn btn-primary'>Inserir ocorrência</button>";
           }else {
 
       ?>
           <div class="btn-group">
-    					<div class="btn-group dropup">
+              <!--<button id="bt_voltar" type="button" class="btn btn-default loading">Voltar</button>-->
+              <a href="oct/index.php?filtro_data=<?=$_GET['filtro_data'];?>" class="btn btn-default loading">Voltar</a>
+              <div class="btn-group dropup">
     						<!--<a class="btn btn-warning dropdown-toggle" data-toggle="dropdown"><?=$dados['status'];?> <span class="caret"></span></a>-->
                 <a id="bt_status" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" ajax="false">Alterar Status <span class="caret"></span></a>
     						<ul class="dropdown-menu" role="menu">
@@ -518,7 +604,8 @@
     							<li><a class="bt_status_action" href="oct/FORM_sql.php?id=<?=$id;?>&status_acao=atualizar&status_alterar=f">Ocorrência Terminada</a></li>
     						</ul>
     					</div>
-              <button id='bt_atualizar_oc' type='submit' class="btn btn-primary" role="button">Atualizar Ocorrência </buttona>
+              <button id='bt_atualizar_oc' type='submit' class="btn btn-primary" role="button">Atualizar Ocorrência </button>
+
     			</div>
       <? } ?>
     </footer>
@@ -527,42 +614,176 @@
     </section>
 </section>
 </form>
+
+
+
+<div class="modal fade"  id="modalFotos" tabindex="-1" role="dialog" aria-labelledby="modalDeFotos" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title text-primary" id="modalDeFotos">Visualização das fotos da ocorrência:
+          <br><small>Ocorrência nº. <?=$id;?>
+        </h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top:-20px">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="form_filtro" action="oct/index.php" method="post">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-4" style="">
+            <?
+                for($i = 0; $i < count($arqs_imgs); $i++)
+                {
+                  $aux = explode(".",$arqs_imgs[$i]);
+                  $aux = explode("_",$aux[0]);
+                  $id_img = ltrim(end($aux),"0");
+                  echo  "<img id='foto_".$id_img."' class='loadimage img-responsive img-rounded img-thumbnail' src='".$arqs_imgs[$i]."' style='max-width:100px; max-height:90px' />";
+                }
+
+            ?>
+
+          </div>
+          <div class="col-sm-8">
+              <div class="row">
+                <div class="col-sm-12" style="min-height:300px;text-align:center;display:table-cell;vertical-align:middle;" id="area_foto">
+                  <i class='fa fa-camera fa-5x text-muted'></i>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-4" style="">
+                    <button type="button" id="bt_remover_foto" class="btn btn-danger disabled"><i class="fa fa-trash"></i></button>
+                </div>
+                <div class="col-sm-8 text-right" id="debug_fotos">. . .</div>
+             </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
 
-$(".loading").click(function(){ $(this).addClass("disabled").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde</small>");});
+  var id_img_remover;
 
-$("#geocode").click(function(){
+$("#bt_remover_foto").click(function(e){
 
-  if($("#endereco").val() != "")
-  {
-    $("#mapinfo").html("Iniciando pesquisa de geocode...");
-    geocode();
-  }else {
-    $("#mapinfo").html("Campo do endereço não pode estar vazio.");
-  }
+  var srcDel = $("#foto_ativa").attr("src");
+  $("#debug_fotos").html("Removendo foto: "+srcDel+", ID:"+id_img_remover);
+  $("#area_foto").html("<i class='fa fa-camera fa-5x text-muted'></i>");
+  $("#"+id_img_remover).hide();
 
 });
-$("#bt_inserir_oc").click(function(){
-          $("#bt_inserir_oc").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde, inserindo ocorrência</small>");
+
+$(".loadimage").click(function(){
+    var src        = $(this).attr("src");
+    id_img_remover = $(this).attr("id");
+    $("#debug_fotos").html("Carregando foto: "+src);
+    $("#area_foto").html("<img id='foto_ativa' src='"+src+"' class='img-responsive img-rounded img-thumbnail' style='max-height:430px'/>");
+    $("#debug_fotos").html(src);
+    $("#bt_remover_foto").removeClass("disabled");
 });
+
+/*
+$(document).ready(function (e) {
+
+  $('#bt_upload').on('click',function(){
+    $("#msg").html("Clicou para inserir imagens<br>");
+    $("#arq_imgs").click();
+
+  });
+   $("#arq_imgs").change(function(){ alert( "Upload de imagens..." );});
+
+
+ $('#bt_uploadsss').on('click', function () {
+
+                   var form_data = new FormData();
+                   var ins = document.getElementById('arq_imgs').files.length;
+                   for (var x = 0; x < ins; x++) {
+                       form_data.append("files[]", document.getElementById('arq_imgs').files[x]);
+                   }
+                   $.ajax({
+                       url: 'oct/image_upload.php?id_oc=<?=$id?>', // point to server-side PHP script
+                       dataType: 'text', // what to expect back from the PHP script
+                       cache: false,
+                       contentType: false,
+                       processData: false,
+                       data: form_data,
+                       type: 'post',
+                       success: function (response) {
+                           alert(response);
+                           $('#msg').html(response); // display success response from the PHP script
+                       },
+                       error: function (response) {
+                           alert(response);
+                           $('#msg').html(response); // display error response from the PHP script
+                       }
+                   });
+               });
+           });
+*/
+
+$("#bt_upload_imgs").click(function(){ $("#msg").html("Buscando imagens."); $("#input_img_files").trigger("click"); });
+$("#input_img_files").change(function(e){
+    if(e.target.files.length == 1)
+    {
+      $("#msg").html("<br>Imagen selecionada:");
+    }else {
+      $("#msg").html("<br>Imagens selecionadas:");
+    }
+
+    for(i = 0; i < e.target.files.length; i++)
+    {
+      $("#msg").append("<br><b>"+e.target.files[i].name+"</b>");
+    }
+
+    $("#msg").append("<br><b class='text-danger'>Aguarde, enviando arquivos...</b>");
+
+    var form_data = new FormData();
+    var ins = document.getElementById('input_img_files').files.length;
+    for (var x=0;x<ins;x++){form_data.append("files[]", document.getElementById('input_img_files').files[x]);  }
+    $.ajax({
+        url: 'oct/image_upload.php?id_oc=<?=$id?>',
+        dataType: 'text', // what to expect back from the PHP script
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,
+        type: 'post',
+        success: function (response) {
+            $('#msg').html(response);
+            $('#wrap').load("oct/FORM.php?id=<?=$id;?>");
+        },
+        error: function (response) {
+            $('#msg').html(response);
+        }
+    });
+})
+
+$('#id_street').select2();
+$('#tipo_oc').select2();
+$("#geocode").click(function(){geocode();});
+$("#bt_inserir_oc").click(function(){ $("#bt_inserir_oc").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde, inserindo ocorrência</small>");});
+$(".bt_status_action").click(function(){ $("#bt_status").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde, atualizando ocorrência</small>");});
 $("#bt_atualizar_oc").click(function(){
-
           $("#bt_atualizar_oc").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde, atualizando ocorrência</small>");
           $("#bt_atualizar_oc").attr("disabled", "disabled");
           $("#form_oct").submit();
 });
 
-$(".bt_status_action").click(function(){
-  $("#bt_status").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde, atualizando ocorrência</small>");
-});
+
 
 <?
   if($dados['geoposition'] != "")
   {
-    $zoommap = 14;
+    $zoommap = 16;
     $posicao = $dados['geoposition'];
   }else{
-    $zoommap = 10;
+    $zoommap = 13;
     $posicao = "-26.301033,-48.840862";
   }
 ?>
@@ -604,16 +825,18 @@ marco = L.marker(latlon, {draggable:'true', autoPan: 'true', autoPanSpeed: '1' }
 
 function geocode(){
 
-
+          $("#mapinfo").html('Pesquisa iniciada.');
 //  if(marco){ map.removeLayer(marco); marco = false;}
           cidade = "Joinville";
           estado = "Santa Catarina";
           pais   = "Brasil";
 
+          endereco = $("#id_street option:selected").text()+" "+$("#street_number").val();
+
 //https://nominatim.openstreetmap.org/search?street=Rua%20Max%20Colin,%201265&city=Joinville&state=Santa%20Catarina&country=Brasil&format=json
 //https://nominatim.openstreetmap.org/search?street=Rua Dr Joao Colin, 2008, 401A&city=Joinville&state=Santa Catarina&country=Brasil&format=json
 
-      var query = "street="+$("#endereco").val()+"&city="+cidade+"&state="+estado+"&country="+pais;
+      var query = "street="+endereco+"&city="+cidade+"&state="+estado+"&country="+pais;
       var url = 'https://nominatim.openstreetmap.org/search?format=json&'+query
       //$("#mapinfo").html(url);
 
@@ -622,11 +845,10 @@ function geocode(){
           var nome  = "";
           if(data.length)
           {
-
               $.each(data, function(key, val)
               {
                 $("#mapinfo").html("<br>Geocode retornado, tipo: "+val.type);
-                if(val.type=="city" || val.type=="residential" || val.type=="house" || val.type=="bus_station" || val.type=="secondary" || val.type=="primary")
+                if(val.type == "tertiary" ||  val.type=="city" || val.type=="residential" || val.type=="house" || val.type=="bus_station" || val.type=="secondary" || val.type=="primary")
                 {
                     notFound = false; //Para travar na primeira ocorrencia
                     nome = val.display_name.split(',',3).join();
@@ -642,7 +864,7 @@ function geocode(){
                                                             map.flyTo(marco.getLatLng());
                                                             $("#coordenadas").val(marco.getLatLng().lat+","+marco.getLatLng().lng);
                                                           });
-                    map.flyTo(marco.getLatLng(),14);
+                    map.flyTo(marco.getLatLng(),12);
                     $("#coordenadas").val(val.lat+","+val.lon);
                     //$("#geocoderet").removeClass("text-muted text-danger").addClass("text-success").html("<b>O marcador pode ser posicionado manualmente para um melhor ajuste. Para concluir, clique em atualizar.</b>");
                 }

@@ -27,14 +27,14 @@ require_once("../libs/php/funcoes.php");
           <?
 
 print_r_pre($_SESSION);
-echo "<hr>Variaveis de ambiente:<br>";
+//echo "<hr>Variaveis de ambiente:<br>";
 //print_r_pre($_SERVER);
 //setenvs();
 //putenv("DB_HOST=xyzaaaaa");
-echo "<hr>Variavel de ambiente setada: ";
-echo getenv("DB_HOST")."<br>";
-echo getenv("DB_PORT")."<br>";
-echo getenv("DB_NAME")."<br>";
+//echo "<hr>Variavel de ambiente setada: ";
+//echo getenv("DB_HOST")."<br>";
+//echo getenv("DB_PORT")."<br>";
+//echo getenv("DB_NAME")."<br>";
 echo "<hr>";
 
 

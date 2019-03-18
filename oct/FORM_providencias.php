@@ -4,14 +4,12 @@
   require_once("../libs/php/conn.php");
 
   $id         = $_GET['id'];
-  //$victim_sel = $_GET['victim_sel'];
-  //$veic_sel   = $_GET['veic_sel'];
+  $agora      = now();
+
+  logger("Acesso","OCT - Providencias", "Ocorrência n.".$_GET['id']);
 
   if($prov_sel)
   {
-    //$sql   = "SELECT * FROM sepud.oct_victim WHERE id = '".$victim_sel."'";
-    //$res   = pg_query($sql)or die("Erro ".__LINE__);
-    //$dados = pg_fetch_assoc($res);
     $acao       = "atualizar";
     $margin_upd = "-19px";
   }else{
@@ -44,8 +42,6 @@
           <div class="col-sm-6">
             <!-- ========================================================= -->
 
-
-
           <div class="row">
 
                <div class="col-sm-12">
@@ -65,7 +61,9 @@
                             echo "<optgroup label='$area'>";
                               for($i=0;$i<count($prov);$i++)
                               {
-                                echo "<option value='".$prov[$i]["id"]."'>".$prov[$i]["providence"]."</option>";
+
+                                if($prov[$i]["id"] == 26){ $sel = "selected"; }else{ $sel = "";}
+                                echo "<option value='".$prov[$i]["id"]."' $sel>".$prov[$i]["providence"]."</option>";
                               }
                             echo "</optgroup>";
                           }
@@ -190,9 +188,25 @@
            </div>
 
 
+           <div class="row">
 
 
+               <div class="col-sm-6">
+                 <div class="form-group">
+                     <label class="control-label">Data:</label>
+                     <input type="text" id="data" name="data" value="<?=$agora['data'];?>" class="form-control"/>
+                  </div>
+              </div>
 
+              <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Hora:</label>
+                    <input type="text" id="hora" name="hora" value="<?=$agora["hm"];?>" class="form-control"/>
+                 </div>
+             </div>
+
+
+          </div>
 
             <!-- ========================================================= -->
           </div><!--<div class="col-sm-8"> FORM PRINCIPAL-->
@@ -201,7 +215,7 @@
                   <div class="col-sm-12">
                     <div class="form-group">
                     <label class="control-label">Observações:</label>
-                        <textarea name="description" placeholder="Descrição detalhada providência tomada." rows="4" class="form-control"><?=$dados['description'];?></textarea>
+                        <textarea name="description" placeholder="Descrição detalhada providência tomada." rows="7" class="form-control"><?=$dados['description'];?></textarea>
                    </div>
                  </div>
             </div>
@@ -275,35 +289,39 @@
                                                         echo "<td><b>".$p['providence']."</b></td>";
                                                         echo "<td  width='150px' align='center'>".formataData($p['opened_date'],1)."</td>";
                                                         //echo "<td  width='150px' align='center'>".formataData($p['closed_date'],1)."</td>";
-                                                      echo "</tr>";
+                                                      echo "<td class='text-center'>Ações</td></tr>";
                                                       echo "<tr>";
                                                         echo "<td colspan='3'>";
 
 
-                                                        echo "<table class='table'>";
-                                                        echo "<tr><td width='50'><span style='color:#CCCCCC'>Observações:</span></td><td colspan='3'>";
-                                                        if($p['observation'] != ""){ echo $p['observation']; }else{ echo "<span style='color:#CCCCCC'>Nenhuma anotação de observação para essa providência.</span>";}
-                                                        echo "</td></tr>";
+                                                                  echo "<table class='table'>";
+                                                                  echo "<tr><td width='50'><span style='color:#CCCCCC'>Observações:</span></td><td colspan='3'>";
+                                                                  if($p['observation'] != ""){ echo $p['observation']; }else{ echo "<span style='color:#CCCCCC'>Nenhuma anotação de observação para essa providência.</span>";}
+                                                                  echo "</td></tr>";
 
-                                                          if(isset($p['vehicle']) || isset($p['victim_name']) || isset($p['hospital']) || isset($p['company_name']))
-                                                          {
-                                                            //echo "<hr><span style='color:#CCCCCC'>Envolvidos: </span>";
+                                                                    if(isset($p['vehicle']) || isset($p['victim_name']) || isset($p['hospital']) || isset($p['company_name']))
+                                                                    {
+                                                                      //echo "<hr><span style='color:#CCCCCC'>Envolvidos: </span>";
 
-                                                            echo "<tr>";
-                                                            if(isset($p['vehicle'])){      echo "<td width='50'><span style='color:#CCCCCC'>Veículo:</span></td><td>".$p['vehicle'].", ".$p['vehicle_color']." - ".$p['licence_plate']."</td>"; }
-                                                            if(isset($p['victim_name'])){  echo "<td width='50'><span style='color:#CCCCCC'>Vítima:</span></td><td>".$p['victim_name'];
-                                                                                           if(isset($p['victim_age'])){ echo ", idade: ".$p['victim_age']." ano(s)"; }
-                                                                                           echo  "</td>"; }
+                                                                      echo "<tr>";
+                                                                      if(isset($p['vehicle'])){      echo "<td width='50'><span style='color:#CCCCCC'>Veículo:</span></td><td>".$p['vehicle'].", ".$p['vehicle_color']." - ".$p['licence_plate']."</td>"; }
+                                                                      if(isset($p['victim_name'])){  echo "<td width='50'><span style='color:#CCCCCC'>Vítima:</span></td><td>".$p['victim_name'];
+                                                                                                     if(isset($p['victim_age'])){ echo ", idade: ".$p['victim_age']." ano(s)"; }
+                                                                                                     echo  "</td>"; }
 
-                                                            echo "</tr><tr>";
 
-                                                            if(isset($p['hospital'])){     echo "<td width='50'><span style='color:#CCCCCC'>Hospital:</span></td><td>".$p['hospital']."</td>"; }
-                                                            if(isset($p['company_name'])){ echo "<td width='50'><span style='color:#CCCCCC'>Orgão:</span></td><td>".$p['company_name']."</td>";}
+                                                                      echo "</tr><tr>";
 
-                                                            echo "</tr>";
+                                                                      if(isset($p['hospital'])){     echo "<td width='50'><span style='color:#CCCCCC'>Hospital:</span></td><td>".$p['hospital']."</td>"; }
+                                                                      if(isset($p['company_name'])){ echo "<td width='50'><span style='color:#CCCCCC'>Orgão:</span></td><td>".$p['company_name']."</td>";}
 
-                                                          }
-                                                          echo "</table>";
+                                                                      echo "</tr>";
+
+                                                                    }
+                                                                    echo "</table>";
+
+                                                            echo "<td class='text-center' width='50px'><a href='oct/FORM_providencias_sql.php?id=".$id."&id_providence=".$p['id']."&acao=remover'><button type='button' class='mb-xs mt-xs mr-xs btn btn-xs btn-danger'><i class='fa fa-trash'></i></button></a></td>";
+
                                                         echo "</td>";
                                                       echo "</tr>";
 

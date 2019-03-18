@@ -2,6 +2,8 @@
     session_start();
     require("../libs/php/funcoes.php");
     require("../libs/php/conn.php");
+
+      logger("Acesso","WAZE - Mapa");
   ?>
   <style>
   iframe {

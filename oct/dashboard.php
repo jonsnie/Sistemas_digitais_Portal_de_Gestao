@@ -3,6 +3,8 @@
   require_once("../libs/php/funcoes.php");
   require_once("../libs/php/conn.php");
   $agora = now();
+
+  logger("Acesso","OCT - Dashboard");
 ?>
 <style>
 .flot-x-axis .flot-tick-label {
@@ -11,7 +13,6 @@
     text-indent: -100%;
     transform-origin: top right;
     text-align: right !important;
-
 }
 </style>
 <section role="main" class="content-body">

@@ -75,7 +75,7 @@
   $infoImport = pg_fetch_assoc($resImport);
   $eqps[$nome_eqp]['last_file_imported'] = $infoImport['data_import'];
 
-
+  logger("Acesso","Radares - Detalhado","ID: ".$id);
 
 ?>
 <style>

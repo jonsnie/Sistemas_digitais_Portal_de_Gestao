@@ -6,13 +6,17 @@
 
   $agora = now();
 
+
+
   if($_GET['filtro']=="dia"){
     $ontem = date('Y-m-d',strtotime("-1 days"));
     $filtro_sql = " EF.pubdate = '".$ontem."'";
     $txt_filtro = "Referência: ".formataData($ontem,1);
+    logger("Acesso","Radares","Filtro: último dia");
   }else{
     $filtro_sql = " EF.pubdate >= '".$agora['ano']."-".$agora['mes']."-01'";
     $txt_filtro = "Referência: ".$agora['mes_txt_c']."/".$agora['ano'];
+    logger("Acesso","Radares");
   }
 
  $sql  = "SELECT  EF.equipment,  EQ.address, EQ.id,

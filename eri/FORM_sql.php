@@ -26,6 +26,9 @@
                         '".$placa."') RETURNING id";
       $res = pg_query($sql)or die("Erro ".__LINE__."<br>SQL: ".$sql);
       $aux = pg_fetch_assoc($res);
+
+      logger("Inserção","ERG - Registro","Novo registro, ID: ".$aux['id'].", Placa do veículo: ".$placa);
+
       header("Location: FORM.php?id=".$aux['id']);
       exit();
     }
@@ -39,6 +42,9 @@
                 SET notified = true, notified_timestamp = '".$agora['datatimesrv']."'
                 WHERE id = '".$id."'";
         pg_query($sql)or die("Erro ".__LINE__."<br>SQL: ".$sql);
+
+        logger("Notificação","ERG - Registro","Registro ID: ".$id);
+
         header("Location: FORM.php?id=".$id);
         exit();
     }
@@ -50,6 +56,9 @@
                 SET closed = true, closed_timestamp = '".$agora['datatimesrv']."'
                 WHERE id = '".$id."'";
         pg_query($sql)or die("Erro ".__LINE__."<br>SQL: ".$sql);
+
+        logger("Baixa","ERG - Registro","Registro ID: ".$id);
+
         header("Location: FORM.php?id=".$id);
         exit();
     }

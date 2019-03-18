@@ -4,7 +4,7 @@
   require_once("../libs/php/conn.php");
   $agora = now();
 
-
+  logger("Acesso","ERG");
 
        $sql = "SELECT
               	SP.id, SP.id_vehicle, SP.id_parking, SP.timestamp,SP.notified, SP.closed, SP.licence_plate,

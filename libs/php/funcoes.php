@@ -15,6 +15,18 @@ function setenvs()
   }
 }
 //////////////////////////////////////////////////////////////////////////////
+
+function logger($action, $module = "Null", $obs = "Null")
+{
+
+  $id_user = ($_SESSION['id']!=""?$_SESSION['id']:"'Null'");
+	$agora = now();
+	$sql = "INSERT INTO sepud.logs(ip, id_user, module, action, timestamp, obs)
+					VALUES ('".$_SERVER['REMOTE_ADDR']."', $id_user, '".$module."','".$action."','".$agora['datatimesrv']."', '".$obs."')";
+	pg_query($sql)or die("Erro ".__LINE__."<hr>".pg_last_error()."<hr>".$sql);
+}
+
+//////////////////////////////////////////////////////////////////////////////
 function print_r_pre($arr){ echo "<pre>"; print_r($arr); echo "</pre>";}
 //////////////////////////////////////////////////////////////////////////////
 function array2utf8(&$arr)
@@ -134,7 +146,7 @@ function date2mkt($data){
 			return mktime($hora[0],$hora[1],$hora[2],$dt[1],$dt[0],$dt[2]);
 		}else{
 			$dt   = explode("/",$dtAux[0]);
-			return mktime(23,59,59,$dt[1],$dt[0],$dt[2]);
+			return mktime(0,0,0,$dt[1],$dt[0],$dt[2]);
 		}
 }
 ?>

@@ -6,6 +6,8 @@
   $id = $_GET['id'];
   $veic_sel = $_GET['veic_sel'];
 
+  logger("Acesso","OCT - Veículo", "Ocorrência n.".$_GET['id']);
+
   if($veic_sel)
   {
     $sql   = "SELECT * FROM sepud.oct_vehicles WHERE id = '".$veic_sel."'";
@@ -60,21 +62,44 @@
                       <input type="text" name="licence_plate" class="form-control" value="<?=$dados['licence_plate'];?>">
                  </div>
                </div>
-               <div class="col-sm-4">
+
+               <div class="col-sm-2">
                  <div class="form-group">
                  <label class="control-label">Cor:</label>
                      <input type="text" name="color" class="form-control" value="<?=$dados['color'];?>">
                 </div>
               </div>
-              <div class="col-sm-4">
-                <div class="form-group">
-                <label class="control-label">Renavam:</label>
-                    <input type="text" name="renavam" class="form-control" value="<?=$dados['renavam'];?>">
-               </div>
-             </div>
+
+  <div class="col-sm-6">
+    <div class="form-group">
+    <label class="control-label">Tipo:</label>
+        <select id="tipo_veiculo" name="tipo_veiculo" class="form-control">
+          <option value="">- - -</option>
+          <?
+              $sql = "SELECT * FROM sepud.oct_vehicle_type ORDER BY name ASC";
+              $res = pg_query($sql) or die();
+              while($t = pg_fetch_assoc($res))
+              {
+                if($t["desc"]!=""){ $desc = " (".$t['desc'].")"; }else{ $desc = ""; }
+                if($dados["id_vehicle_type"] == $t["id"]){ $sel = "selected"; }else{ $sel = ""; }
+                echo "<option value='".$t['id']."' $sel>".$t['name'].$desc."</option>";
+              }
+          ?>
+        </select>
+   </div>
+ </div>
+
           </div>
           <div class="row">
-                <div class="col-sm-12">
+
+                <div class="col-sm-4">
+                  <div class="form-group">
+                  <label class="control-label">Renavam:</label>
+                      <input type="text" name="renavam" class="form-control" value="<?=$dados['renavam'];?>">
+                 </div>
+               </div>
+
+                <div class="col-sm-8">
                   <div class="form-group">
                   <label class="control-label">Chassi:</label>
                       <input type="text" name="chassi" class="form-control" value="<?=$dados['chassi'];?>">
@@ -133,9 +158,11 @@
                 <?
                   $sqlv = "SELECT
                             	VE.*,
+                              T.name as vehicle_type,
                             	(SELECT COUNT ( * ) FROM sepud.oct_victim WHERE id_vehicle = VE.ID) AS qtd_vitimas
                             FROM
                             	sepud.oct_vehicles VE
+                              LEFT JOIN sepud.oct_vehicle_type T ON T.id = VE.id_vehicle_type
                             WHERE
                             	id_events = '".$id."'
                             ORDER BY id ASC";
@@ -147,13 +174,14 @@
                       {
                         echo "<table class='table table-striped table-bordered table-condensed'>
                               <thead><tr bgcolor='#dbe9ff'>
-                              <th>#</th>
+                              <th width='10px'>#</th>
                               <th>Veículo</th>
-                              <th>Cor</th>
-                              <th>Placa</th>
-                              <th>Renavam</th>
-                              <th>Chassi</th>
-                              <th class='text-center'>Vítimas</th>
+                              <th width='10px'>Cor</th>
+                              <th width='80px'>Placa</th>
+                              <th width='10px'>Renavam</th>
+                              <th width='10px'>Chassi</th>
+                              <th width='100px'>Tipo</th>
+                              <th class='text-center' width='10px'>Vítimas</th>
                               <th colspan='3' class='text-center'>Ações</th>
 
 
@@ -167,6 +195,7 @@
                             echo "<td>".$d['licence_plate']."</td>";
                             echo "<td>".$d['renavam']."</td>";
                             echo "<td>".$d['chassi']."</td>";
+                            echo "<td>".$d['vehicle_type']."</td>";
                             echo "<td class='text-center'>".$d['qtd_vitimas']."</td>";
 
 

@@ -32,6 +32,8 @@
                           '".$refuse_help."')";
       pg_query($sql)or die("Erro ".__LINE__);
 
+      logger("Inserção","OCT - Vítima", "Ocorrência n.".$id);
+
       if($retorno_acao == "continuar"){ header("Location: FORM_vitima.php?id=".$id);}
       else                            { header("Location: FORM.php?id=".$id);       }
 
@@ -57,6 +59,8 @@
               WHERE id = '".$victim_sel."'";
       pg_query($sql)or die("Erro ".__LINE__);
 
+      logger("Atualização","OCT - Vítima", "Ocorrência n.".$id.", ID: ".$victim_sel);
+
       if($retorno_acao == "continuar"){ header("Location: FORM_vitima.php?id=".$id);}
       else                            { header("Location: FORM.php?id=".$id);       }
       exit();
@@ -65,7 +69,16 @@
     extract($_GET);
     if($acao == "remover")
     {
-      echo $sql = "DELETE FROM sepud.oct_victim WHERE id = '".$victim_sel."'";
+
+      $sql  = "SELECT * FROM sepud.oct_victim WHERE id = '".$victim_sel."'";
+      $res  = pg_query($sql)or die("Erro ".__LINE__);
+      $d    = pg_fetch_assoc($res);
+      $vit  = print_r($d,true);
+
+      $sql  = "DELETE FROM sepud.oct_victim WHERE id = '".$victim_sel."'";
+
+      logger("Remoção","OCT - Vítima", "Ocorrência n.".$id.", Dados: ".$vit);
+
       pg_query($sql)or die("Erro ".__LINE__);
       header("Location: FORM_vitima.php?id=".$id);
       exit();

@@ -12,6 +12,10 @@
     if($acao == "inserir" && $userid != "")
     {
 
+      if($id_street == "")    { $id_street="Null";     }else{ $id_street     = "'".$id_street."'";     }
+      if($street_number == ""){ $street_number="Null"; }else{ $street_number = "'".$street_number."'"; }
+
+
         $sql = "INSERT INTO sepud.oct_events
                     (date,
                      description,
@@ -21,7 +25,9 @@
                      id_event_type,
                      status,
                      victim_inform,
-                     id_user)
+                     id_user,
+                     id_street,
+                    street_number)
               VALUES ('".$datafinal."',
                       '".$description."',
                       '".$endereco."',
@@ -30,10 +36,15 @@
                       '".$tipo_oc."',
                       'Em deslocamento',
                       '".$victim_inform."',
-                      '".$userid."') returning id";
+                      '".$userid."',
+                      ".$id_street.",
+                      ".$street_number.") returning id";
 
         $res = pg_query($sql) or die("Erro ".__LINE__);
         $aux = pg_fetch_assoc($res);
+
+        logger("Inserção","OCT", "Ocorrência n.".$aux['id']);
+
         header("Location: FORM.php?id=".$aux['id']);
         exit();
     }
@@ -50,12 +61,8 @@
           }
         }
 
-/*
-        echo "<div class='text-center'>
-                  <hr>".$sqlCond."<hr>
-                  <a href='oct/FORM.php?id=".$id."'>Voltar</a>
-              </div>";
-*/
+        if($id_street == "")    { $id_street="Null";     }else{ $id_street     = "'".$id_street."'"; }
+        if($street_number == ""){ $street_number="Null"; }else{ $street_number = "'".$street_number."'"; }
 
         $sql = "UPDATE sepud.oct_events SET
                      date               = '".$datafinal."',
@@ -65,10 +72,14 @@
                      geoposition        = '".$coordenadas."',
                      id_event_type      = '".$tipo_oc."',
                      status             = '".$status."',
-                     victim_inform      = '".$victim_inform."'
+                     victim_inform      = '".$victim_inform."',
+                     id_street          = ".$id_street.",
+                     street_number      = ".$street_number."
                WHERE id                 = '".$id."'";
 
         pg_query($sqlCond.$sql) or die("Erro ".__LINE__);
+
+        logger("Atualização","OCT", "Ocorrência n.".$id);
 
         header("Location: FORM.php?id=".$id);
         exit();
@@ -81,15 +92,15 @@ if($_GET['status_acao'] == "atualizar" && $_GET['id'] != "")
     switch ($_GET['status_alterar']) {
       case 'd':
         $var_status = "Em deslocamento";
-        $sqlU = "UPDATE sepud.oct_events SET status = '".$var_status."' WHERE id = '".$_GET['id']."'";
+        $sqlU = "UPDATE sepud.oct_events SET active = true, closure = null, status = '".$var_status."' WHERE id = '".$_GET['id']."'";
         break;
       case 'a':
         $var_status = "Em atendimento";
-        $sqlU = "UPDATE sepud.oct_events SET status = '".$var_status."', arrival = '".$agora['datasrv']." ".$agora['hms']."' WHERE id = '".$_GET['id']."'";
+        $sqlU = "UPDATE sepud.oct_events SET active = true, closure = null, status = '".$var_status."', arrival = '".$agora['datasrv']." ".$agora['hms']."' WHERE id = '".$_GET['id']."'";
         break;
       case 'e':
         $var_status = "Encaminhamento";
-        $sqlU = "UPDATE sepud.oct_events SET status = '".$var_status."' WHERE id = '".$_GET['id']."'";
+        $sqlU = "UPDATE sepud.oct_events SET active = true, closure = null,  status = '".$var_status."' WHERE id = '".$_GET['id']."'";
         break;
       case 'f':
         $var_status = "Ocorrência terminada";
@@ -97,11 +108,14 @@ if($_GET['status_acao'] == "atualizar" && $_GET['id'] != "")
         break;
       default:
         $var_status = "Em atendimento";
-        $sqlU = "UPDATE sepud.oct_events SET status = '".$var_status."' WHERE id = '".$_GET['id']."'";
+        $sqlU = "UPDATE sepud.oct_events SET active = true, closure = null, status = '".$var_status."' WHERE id = '".$_GET['id']."'";
         break;
     }
 
      pg_query($sqlU)or die("<span class='text-center'>Erro ".__LINE__."<br>".$sqlU);
+
+     logger("Atualização de status","OCT", "Ocorrência n.".$_GET['id']." - ".$var_status);
+
      header("Location: FORM.php?id=".$_GET['id']);
 }
 ?>

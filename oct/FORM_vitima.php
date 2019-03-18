@@ -7,6 +7,8 @@
   $victim_sel = $_GET['victim_sel'];
   $veic_sel   = $_GET['veic_sel'];
 
+  logger("Acesso","OCT - Vítima", "Ocorrência n.".$_GET['id']);
+
   if($victim_sel)
   {
     $sql   = "SELECT * FROM sepud.oct_victim WHERE id = '".$victim_sel."'";

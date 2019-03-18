@@ -5,6 +5,8 @@
   require("../libs/php/funcoes.php");
   require("../libs/php/conn.php");
 
+    logger("Acesso","WAZE - Dashboard");
+
 if(isset($_POST['waze_filtro_data']))
 {
   $filtro_data = mkt2date(date2mkt($_POST['waze_filtro_data']));
