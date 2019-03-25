@@ -64,7 +64,23 @@
             <ul class="nav nav-children">
               <li><a href="eri/index.php">Estacionamento Rotativo</a></li>
               <li><a href="oct/index.php">Ocorrências de Trânsito</a></li>
-              <li><a href="oct/dashboard.php">Dashboard</a></li>
+
+
+<?  if($_SESSION['id']==1){ ?>
+  <li class="nav-parent">
+    <a><span>Sistema de gestão</span></a>
+    <ul class="nav nav-children">
+        <li><a href="#">Diário administrativo</a></li>
+        <li><a href="#">Turnos</a></li>
+        <li><a href="oct/index.php">Ocorrências</a></li>
+        <li><a href="#">Evolução diária</a></li>
+        <li><a href="oct/dashboard.php">Evolução mensal</a></li>
+        <li><a href="#">Configurações</a></li>
+    </ul>
+  </li>
+<?  } ?>
+
+
             </ul>
           </li>
 

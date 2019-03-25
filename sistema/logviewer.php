@@ -58,7 +58,7 @@ logger("Acesso","Logs");
 	$sql = "SELECT U.name, L.id_user, L.timestamp, L.ip, L.module, L.action, L.obs
 					FROM sepud.logs L
 					LEFT JOIN sepud.users U ON U.id = L.id_user
-					WHERE id_user <> 1
+					--WHERE id_user <> 1
 					ORDER BY L.timestamp DESC
 					LIMIT 250";
 	$rs  = pg_query($sql)or die("Erro ".__LINE__);

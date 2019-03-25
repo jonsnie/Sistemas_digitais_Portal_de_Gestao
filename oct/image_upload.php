@@ -8,6 +8,8 @@
 $id_oc = $_GET["id_oc"];
 $dir   = "uploads/".$id_oc;
 
+logger("Inserção","OCT - imagens", "Ocorrência n.".$id_oc);
+
 if(!file_exists($dir)){  mkdir($dir, 0777, true);}
 
 if (isset($_FILES['files']) && !empty($_FILES['files'])) {

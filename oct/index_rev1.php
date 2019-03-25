@@ -149,7 +149,7 @@
 
 ?>
 <div class="col-md-12">
-								<section class="panel box_shadow">
+								<section class="panel">
 									<header class="panel-heading" style="height:70px">
                     <span class="text-muted"> Data de referência: </span><b><?=$data_atual;?></b>
                     <br><small class="text-muted"><?=$txt_oc_abertas;?><?=($txt_oc_baixadas!=""?", ".$txt_oc_baixadas:"");?>
@@ -164,7 +164,7 @@
           </button>";
 
 if(!$bt_filtro_placa){ ?>
-  <a href="oct/index.php?filtro_data=<?=$anterior;?>">
+  <a href="oct/index0.php?filtro_data=<?=$anterior;?>">
     <button type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-play fa-rotate-180"></i></button>
   </a>
 <? }else{
@@ -174,11 +174,11 @@ if(!$bt_filtro_placa){ ?>
 
 ?>
   <? if($bt_prox || $bt_filtro_placa){ ?>
-  <a href="oct/index.php?filtro_data=">
+  <a href="oct/index0.php?filtro_data=">
     <button type="button" class="mb-xs mt-xs mr-xs btn btn-success">Ir para hoje</button>
   </a>
 <? if(!$bt_filtro_placa){ ?>
-  <a href="oct/index.php?filtro_data=<?=$proximo;?>">
+  <a href="oct/index0.php?filtro_data=<?=$proximo;?>">
     <button type="button" class="mb-xs mt-xs mr-xs btn btn-success"><i class="fa fa-play"></i></button>
   </a>
 <? }else {
@@ -321,7 +321,7 @@ if(isset($dados_baixados) && count($dados_baixados))
                             <span aria-hidden="true">&times;</span>
                           </button>
                         </div>
-                        <form id="form_filtro" action="oct/index.php" method="post">
+                        <form id="form_filtro" action="oct/index0.php" method="post">
                         <div class="modal-body">
                           <? require_once("filtros.php"); ?>
                         </div>

@@ -33,7 +33,7 @@
       $hora = $aux[1];
       $txt_bread = "Ocorrência n.".$id;
 
-      logger("Acesso","OCT", "Ocorrência n.".$id);
+      logger("Acesso detalhado","OCT", "Ocorrência n.".$id);
 
   }else{
       $acao                   = "inserir";
@@ -45,6 +45,7 @@
 
   }
 ?>
+
 <form id="form_oct" action="oct/FORM_sql.php" method="post">
 <section role="main" class="content-body">
     <header class="page-header">
@@ -78,12 +79,21 @@
           <div class="col-sm-8">
             <!-- ========================================================= -->
             <div class="row">
-              <div class="col-sm-8">
+              <div class="col-sm-10">
                     <div class="form-group">
           						<label class="control-label" for="tipo_oc">Ocorrência:</label>
-              							<select id="tipo_oc" name="tipo_oc" class="form-control">
+              							<select id="tipo_oc" name="tipo_oc" class="form-control select2 changefield">
               								<?
-                                $sql = "SELECT * FROM sepud.oct_event_type ORDER BY name ASC";
+                              if(isset($_SESSION["company_id"]))
+                              {
+                                  $sql = "SELECT T.* FROM sepud.oct_event_type T
+                                          JOIN sepud.oct_rel_event_type_company R ON R.id_event_type = T.id AND R.id_company = '".$_SESSION["company_id"]."'
+                                          WHERE T.active = true
+                                          ORDER BY T.name ASC";
+                              }else {
+                                  $sql = "SELECT * FROM sepud.oct_event_type WHERE active = true ORDER BY name ASC";
+                             }
+
                                 $res = pg_query($conn_neogrid,$sql)or die("Error: ".__LINE__);
                                 while($d = pg_fetch_assoc($res))
                                 {
@@ -97,8 +107,9 @@
                                   echo "<optgroup label='".$type."'>";
                                     for($i = 0; $i < count($d); $i++)
                                     {
+                                      if($d[$i]['name_acron'] != ""){ $acron = $d[$i]['name_acron']." - ";}else{$acron = "";}
                                       if($dados['id_event_type'] == $d[$i]['id']){ $sel = "selected"; }else{ $sel = ""; }
-                                      echo "<option value='".$d[$i]['id']."' $sel>".$d[$i]['name']."</option>";
+                                      echo "<option value='".$d[$i]['id']."' $sel>".$acron.$d[$i]['name']."</option>";
                                     }
                                   echo "</optgroup>";
                                 }
@@ -107,10 +118,10 @@
           					</div>
               </div>
 
-                  <div class="col-sm-4">
+                  <div class="col-sm-2">
                         <div class="form-group">
-                          <label class="control-label" for="victim_inform">Vítimas informadas:</label>
-                                <select id="victim_inform" name="victim_inform" class="form-control">
+                          <label class="control-label" for="victim_inform">Vítima(s) info.:</label>
+                                <select id="victim_inform" name="victim_inform" class="form-control changefield">
                                   <?
                                     for($i = 0; $i <= 100; $i++)
                                     {
@@ -130,7 +141,7 @@
               <div class="col-sm-6">
                 <div class="form-group">
                 <label class="control-label">Logradouro:</label>
-                    <select id="id_street" name="id_street" class="form-control select2" style="width: 100%; height:100%">
+                    <select id="id_street" name="id_street" class="form-control select2 changefield" style="width: 100%; height:100%">
                       <option value="">- - -</option>
                       <?
                         $sql = "SELECT * FROM sepud.streets ORDER BY name ASC";
@@ -148,7 +159,7 @@
                   <div class="col-sm-2">
                     <div class="form-group">
                     <label class="control-label">Numero:</label>
-                        <input type="number" id="street_number" name="street_number" class="form-control" value="<?=$dados['street_number'];?>">
+                        <input type="number" id="street_number" name="street_number" class="form-control changefield" value="<?=$dados['street_number'];?>">
                    </div>
                   </div>
 
@@ -164,7 +175,7 @@
                  <div class="col-sm-12">
                    <div class="form-group">
                    <label class="control-label">Complemento do endereço/pontos de referencia:</label>
-                       <input type="text" name="endereco_complemento" class="form-control" value="<?=$dados['address_complement'];?>">
+                       <input type="text" name="endereco_complemento" class="form-control changefield" value="<?=$dados['address_complement'];?>">
                   </div>
                  </div>
             </div>
@@ -173,20 +184,20 @@
                  <div class="col-sm-4">
                    <div class="form-group">
                    <label class="control-label">Data:</label>
-                       <input type="text" name="data" class="form-control" value="<?=($acao=="inserir"?$agora['data']:$data);?>">
+                       <input type="text" name="data" class="form-control changefield" value="<?=($acao=="inserir"?$agora['data']:$data);?>">
                   </div>
                  </div>
                  <div class="col-sm-4">
                    <div class="form-group">
                    <label class="control-label">Hora:</label>
-                       <input type="text" name="hora" class="form-control" value="<?=($acao=="inserir"?$agora['hm']:$hora);?>">
+                       <input type="text" name="hora" class="form-control changefield" value="<?=($acao=="inserir"?$agora['hm']:$hora);?>">
                   </div>
                  </div>
 
                  <div class="col-sm-4">
                    <div class="form-group">
                    <label class="control-label">Coordenadas Geográficas:</label>
-                       <input type="text" id="coordenadas" name="coordenadas" class="form-control text-center" value="<?=$dados['geoposition'];?>">
+                       <input type="text" id="coordenadas" name="coordenadas" class="form-control text-center changefield" value="<?=$dados['geoposition'];?>">
                   </div>
                  </div>
           </div>
@@ -196,14 +207,14 @@
                          <div class="col-sm-8">
                            <div class="form-group">
                              <label class="control-label">Descrição detalhada:</label>
-                             <textarea name="description" class="form-control" rows="10" placeholder="Descreva a ocorrência."><?=$dados['description'];?></textarea>
+                             <textarea name="description" id="description" class="form-control changefield" rows="10" placeholder="Descreva a ocorrência."><?=$dados['description'];?></textarea>
                            </div>
                          </div>
 
                          <div class="col-sm-4">
                            <div class="form-group">
                                  <label class="control-label" for="condicoes[]">Condições:</label>
-                                   <select size='10' multiple data-plugin-selectTwo id="condicoes[]" name="condicoes[]" class="form-control populate">
+                                   <select size='10' multiple data-plugin-selectTwo id="condicoes[]" name="condicoes[]" class="form-control populate changefield">
                                      <?
                                     //   $aux = json_decode($dados['event_conditions']);
 
@@ -225,6 +236,34 @@
                          </div>
               </div>
 
+<? if($_SESSION['id']==1){ ?>
+  <div class="row">
+    <div class="col-sm-12" style="margin-top:10px">
+
+      <div class="btn-group">
+          <!--<button id="bt_voltar" type="button" class="btn btn-default loading">Voltar</button>-->
+          <a href="oct/index.php?filtro_data=<?=$_GET['filtro_data'];?>" class="btn btn-default loading">Voltar</a>
+          <div class="btn-group dropup">
+            <!--<a class="btn btn-warning dropdown-toggle" data-toggle="dropdown"><?=$dados['status'];?> <span class="caret"></span></a>-->
+            <button type="button" id="bt_status" class="btn btn-warning dropdown-toggle disable_button" data-toggle="dropdown" ajax="false">Alterar Status <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li><a class="bt_status_action" href="oct/FORM_sql.php?id=<?=$id;?>&status_acao=atualizar&status_alterar=d">Em deslocamento</a></li>
+              <li><a class="bt_status_action" href="oct/FORM_sql.php?id=<?=$id;?>&status_acao=atualizar&status_alterar=a">Em atendimento</a></li>
+              <li><a class="bt_status_action" href="oct/FORM_sql.php?id=<?=$id;?>&status_acao=atualizar&status_alterar=e">Encaminhamento</a></li>
+              <li class="divider"></li>
+              <li><a class="bt_status_action" href="oct/FORM_sql.php?id=<?=$id;?>&status_acao=atualizar&status_alterar=f">Ocorrência Terminada</a></li>
+            </ul>
+          </div>
+          <button id='bt_atualizar_oc'  type='submit' class="btn btn-primary bt_atualizar_oc" role="button">Atualizar Ocorrência</button>
+          <button type='button' class="btn btn-danger bt_recarregar_oc" style="display:none" role="button">Cancelar atualizações</button>
+
+      </div>
+
+
+    </div>
+  </div>
+<? } ?>
+
 
               <div class="row" style="margin-top:15px">
                     <div class="col-md-12">
@@ -232,7 +271,7 @@
                             <header class="panel-heading">
                               <div class="panel-actions" style="margin-top:-10px">
                                   <div class="btn-group">
-                                      <a href="oct/FORM_providencias.php?id=<?=$id;?>"><button type="button" class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-file-powerpoint-o"></i> <sup><i class="fa fa-plus"></i></sup> Providências</button></a>
+                                      <button id="bt_add_prov" type="button" class="mb-xs mt-xs mr-xs btn btn-default loading disable_button"><i class="fa fa-file-powerpoint-o"></i> <sup><i class="fa fa-plus"></i></sup> Providências</button>
                                   </div>
                               </div>
                               <h2 class="panel-title">Providências:</h2>
@@ -360,18 +399,15 @@
             								<header class="panel-heading">
             									<div class="panel-actions" style="margin-top:-10px">
                                   <div class="btn-group">
-                  										<a href="oct/FORM_veiculo.php?id=<?=$id;?>"><button type="button" class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-car"></i> <sup><i class="fa fa-plus"></i></sup> Veículos</button></a>
-                                      <a href="oct/FORM_vitima.php?id=<?=$id;?>"><button type="button"  class="mb-xs mt-xs mr-xs btn btn-default loading"><i class="fa fa-user"></i> <sup><i class="fa fa-plus"></i></sup> Vítimas/Envolvidos</button></a>
+                  										<button id="bt_add_veic" type="button" class="mb-xs mt-xs mr-xs btn btn-default loading disable_button"><i class="fa fa-car"></i> <sup><i class="fa fa-plus"></i></sup> Veículos</button>
+                                      <button  id="bt_add_vit"  type="button"  class="mb-xs mt-xs mr-xs btn btn-default loading disable_button"><i class="fa fa-user"></i> <sup><i class="fa fa-plus"></i></sup> Vítimas/Envolvidos</button>
                                   </div>
             									</div>
             									<h2 class="panel-title">Envolvidos:</h2>
             								</header>
             								<div class="panel-body">
 
-
             								<?
-
-
                                 $sqlVei = "SELECT * FROM sepud.oct_vehicles WHERE id_events = '".$id."'";
                                 $resVei = pg_query($conn_neogrid,$sqlVei)or die("Error ".__LINE__);
                                 while($d = pg_fetch_assoc($resVei)){ $veics[$d['id']] = $d; }
@@ -529,11 +565,11 @@
         <header class="panel-heading">
           <h4><span class="text-primary">Fotos:</h4>
           <div class="panel-actions">
-            <button id="bt_upload_imgs" type="button" class="mb-xs mt-xs mr-xs btn  btn-default"><i class="fa fa-camera"></i> <sup><i class="fa fa-plus"></i></sup></button>
+            <button id="bt_upload_imgs" type="button" class="mb-xs mt-xs mr-xs btn  btn-default disable_button"><i class="fa fa-camera"></i> <sup><i class="fa fa-plus"></i></sup></button>
             <input type="file" id="input_img_files" name="files[]" multiple="multiple" style="display:none" />
 
-            <? if($_SESSION["id"]==1 && pg_num_rows($res)){   ?>
-                <button id="bt_ver_imgs" type="button" class="mb-xs mt-xs mr-xs btn  btn-default" data-toggle='modal' data-target='#modalFotos'><i class="fa fa-image"></i> <sup><i class="fa fa-eye"></i></sup></button>
+            <? if(pg_num_rows($res)){   ?>
+                <button id="bt_ver_imgs" type="button" class="mb-xs mt-xs mr-xs btn  btn-default disable_button" data-toggle='modal' data-target='#modalFotos'><i class="fa fa-image"></i> <sup><i class="fa fa-eye"></i></sup></button>
             <? } ?>
           </div>
         </header>
@@ -546,9 +582,15 @@
                     {
                       while($f = pg_fetch_assoc($res))
                       {
-                        echo  "<img src='oct/uploads/".$id."/".$f['image']."' style='padding:2px; width:100px' />";
+
+                      //  $aux = explode(".",$f['image']);
+                      //  $aux = explode("_",$aux[0]);
+                      //  $id_img = ltrim(end($aux),"0");
+
+                        echo  "<img src='oct/uploads/".$id."/".$f['image']."' style='padding:2px; width:100px' data-toggle='modal' data-target='#modalFotos' />";
                         $arqs_imgs[] = "oct/uploads/".$id."/".$f['image'];
                       }
+                      unset($aux,$id_img);
 
                     }else {
                       echo "<div class='text-center' style='margin-bottom:20px'><i class='fa fa-camera fa-5x text-muted'></i></div>";
@@ -595,7 +637,7 @@
               <a href="oct/index.php?filtro_data=<?=$_GET['filtro_data'];?>" class="btn btn-default loading">Voltar</a>
               <div class="btn-group dropup">
     						<!--<a class="btn btn-warning dropdown-toggle" data-toggle="dropdown"><?=$dados['status'];?> <span class="caret"></span></a>-->
-                <a id="bt_status" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" ajax="false">Alterar Status <span class="caret"></span></a>
+                <button type="button" id="bt_status" class="btn btn-warning dropdown-toggle disable_button" data-toggle="dropdown" ajax="false">Alterar Status <span class="caret"></span></button>
     						<ul class="dropdown-menu" role="menu">
     							<li><a class="bt_status_action" href="oct/FORM_sql.php?id=<?=$id;?>&status_acao=atualizar&status_alterar=d">Em deslocamento</a></li>
     							<li><a class="bt_status_action" href="oct/FORM_sql.php?id=<?=$id;?>&status_acao=atualizar&status_alterar=a">Em atendimento</a></li>
@@ -604,7 +646,8 @@
     							<li><a class="bt_status_action" href="oct/FORM_sql.php?id=<?=$id;?>&status_acao=atualizar&status_alterar=f">Ocorrência Terminada</a></li>
     						</ul>
     					</div>
-              <button id='bt_atualizar_oc' type='submit' class="btn btn-primary" role="button">Atualizar Ocorrência </button>
+              <button id='bt_atualizar_oc' type='submit' class="btn btn-primary bt_atualizar_oc" role="button">Atualizar Ocorrência</button>
+              <button type='button' class="btn btn-danger bt_recarregar_oc" style="display:none" role="button">Cancelar atualizações</button>
 
     			</div>
       <? } ?>
@@ -638,7 +681,7 @@
                   $aux = explode(".",$arqs_imgs[$i]);
                   $aux = explode("_",$aux[0]);
                   $id_img = ltrim(end($aux),"0");
-                  echo  "<img id='foto_".$id_img."' class='loadimage img-responsive img-rounded img-thumbnail' src='".$arqs_imgs[$i]."' style='max-width:100px; max-height:90px' />";
+                  echo  "<img id='".$id_img."' class='loadimage img-responsive img-rounded img-thumbnail' src='".$arqs_imgs[$i]."' style='max-width:100px; max-height:90px' />";
                 }
 
             ?>
@@ -668,16 +711,45 @@
 
 <script>
 
-  var id_img_remover;
+
+
+function bloqueio()
+{
+  //alert("Descrição da ocorrência alterada, não esqueça de atualizar os dados antes de qualquer outra interação com o sistema");
+  $(".disable_button").addClass("disabled");
+  $(".bt_recarregar_oc").show();
+  //$(".bt_atualizar_oc").html("Atualizar Ocorrência <sup>(Houve alteração)</sup>");
+}
+
+$(".changefield").change(function(){ bloqueio(); });
+
+$("#bt_add_prov").click(function(){ $("#wrap").load("oct/FORM_providencias.php?id=<?=$id;?>"); })
+$("#bt_add_veic").click(function(){ $("#wrap").load("oct/FORM_veiculo.php?id=<?=$id;?>"); })
+$("#bt_add_vit").click(function(){ $("#wrap").load("oct/FORM_vitima.php?id=<?=$id;?>"); })
+
+$(".bt_recarregar_oc").click(function(){ $('#wrap').load("oct/FORM.php?id=<?=$id;?>"); });
+
+var id_img_remover;
+var removeu_image = false;
 
 $("#bt_remover_foto").click(function(e){
 
   var srcDel = $("#foto_ativa").attr("src");
-  $("#debug_fotos").html("Removendo foto: "+srcDel+", ID:"+id_img_remover);
+  $("#debug_fotos").html("Removendo foto: "+srcDel);
   $("#area_foto").html("<i class='fa fa-camera fa-5x text-muted'></i>");
   $("#"+id_img_remover).hide();
+  $("#debug_fotos").load("oct/image_remove.php?id_oc=<?=$id;?>&id="+id_img_remover+"&arq="+srcDel);
+  removeu_image = true;
 
 });
+
+$('#modalFotos').on('hidden.bs.modal',function(e){
+
+    if(removeu_image){ $('#wrap').load("oct/FORM.php?id=<?=$id;?>");}
+    removeu_image = false;
+
+});
+
 
 $(".loadimage").click(function(){
     var src        = $(this).attr("src");
@@ -764,8 +836,10 @@ $("#input_img_files").change(function(e){
     });
 })
 
-$('#id_street').select2();
-$('#tipo_oc').select2();
+//$('#id_street').select2();
+//$('#tipo_oc').select2();
+$('.select2').select2();
+
 $("#geocode").click(function(){geocode();});
 $("#bt_inserir_oc").click(function(){ $("#bt_inserir_oc").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde, inserindo ocorrência</small>");});
 $(".bt_status_action").click(function(){ $("#bt_status").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde, atualizando ocorrência</small>");});
@@ -819,6 +893,7 @@ marco = L.marker(latlon, {draggable:'true', autoPan: 'true', autoPanSpeed: '1' }
                                       count=0;
                                       map.flyTo(marco.getLatLng());
                                       $("#coordenadas").val(marco.getLatLng().lat+","+marco.getLatLng().lng);
+                                      bloqueio();
                                     });
 
 
@@ -866,6 +941,7 @@ function geocode(){
                                                           });
                     map.flyTo(marco.getLatLng(),12);
                     $("#coordenadas").val(val.lat+","+val.lon);
+                    bloqueio();
                     //$("#geocoderet").removeClass("text-muted text-danger").addClass("text-success").html("<b>O marcador pode ser posicionado manualmente para um melhor ajuste. Para concluir, clique em atualizar.</b>");
                 }
               });

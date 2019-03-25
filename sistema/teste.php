@@ -1,10 +1,17 @@
 <?
-error_reporting(E_ALL);
 session_start();
-//header("Content-Type: text/html; charset=ISO-8859-1",true);
 require_once("../libs/php/funcoes.php");
+require_once("../libs/php/conn.php");
 ?>
+<style>
+.select2-selection__rendered {
+line-height: 32px !important;
+}
 
+.select2-selection {
+height: 34px !important;
+}
+</style>
 <section role="main" class="content-body">
 
   <header class="page-header">
@@ -124,4 +131,80 @@ exit();
         ?>
         </div>
   </div>
+
+
+  <div class="row">
+    <div class="col-sm-6">
+          <div class="form-group">
+            <label class="control-label" for="tipo_oc">Ocorrência:</label>
+
+                    <?
+
+                      if(isset($_SESSION["company_id"]))
+                      {
+                          $sql = "SELECT T.* FROM sepud.oct_event_type T
+                                  JOIN sepud.oct_rel_event_type_company R ON R.id_event_type = T.id AND R.id_company = '".$_SESSION["company_id"]."'
+                                  WHERE T.active = true
+                                  ORDER BY T.name ASC";
+                      }else {
+                          $sql = "SELECT * FROM sepud.oct_event_type WHERE active = true ORDER BY name ASC";
+                     }
+
+                      $res = pg_query($conn_neogrid,$sql)or die("Erro ".__LINE__."<br>".$sql);
+                      while($d = pg_fetch_assoc($res))
+                      {
+                          $vet[$d['type']][] = $d;
+
+                        //if($dados['id_event_type'] == $d['id']){ $sel = "selected"; }else{ $sel = ""; }
+                        //echo "<option value='".$d['id']."' $sel>".$d['name']."</option>";
+                      }
+                      ?>
+                      <select id="tipo_oc" name="tipo_oc" class="form-control changefield select2">
+                      <?
+                      foreach($vet as $type => $d)
+                      {
+                        echo "<optgroup label='".$type."'>";
+                          for($i = 0; $i < count($d); $i++)
+                          {
+                            if($d[$i]['name_acron'] != ""){ $acron = $d[$i]['name_acron']." - ";}else{$acron = "";}
+                            if($dados['id_event_type'] == $d[$i]['id']){ $sel = "selected"; }else{ $sel = ""; }
+                            echo "<option value='".$d[$i]['id']."' $sel>[".$d[$i]['id']."] ".$acron.$d[$i]['name']."</option>";
+                          }
+                        echo "</optgroup>";
+                      }
+                    ?>
+                  </select>
+          </div>
+    </div>
+
+        <div class="col-sm-2">
+              <div class="form-group">
+                <label class="control-label" for="victim_inform">Vítima(s) info.:</label>
+                      <select id="victim_inform" name="victim_inform" class="form-control changefield">
+                        <?
+                          for($i = 0; $i <= 100; $i++)
+                          {
+                            if($dados['victim_inform'] == $i){ $sel = "selected"; }else{ $sel = ""; }
+                            echo "<option value='".$i."' $sel>".$i."</option>";
+                          }
+                        ?>
+                      </select>
+              </div>
+        </div>
+  </div>
+
+<div class="row">
+  <div class="col-sm-12" style="background:#FFFFF0">
+
+        <table>
+        </table>
+
+  </div>
+</div>
 </section>
+<script>
+  $('.select2').select2();
+</script>
+<?
+  unset($_SESSION["company_id"]);
+?>

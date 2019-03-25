@@ -2,6 +2,8 @@
 error_reporting(0);
 session_start();
 
+if($_SESSION['auth']!="true"){ header("Location: ../index.php");exit();}
+
 require_once("../libs/php/funcoes.php");
 require_once("../libs/php/conn.php");
 
@@ -13,4 +15,5 @@ $msg = array("tipo" => "success",  "titulo" => "Logout", "texto" => "Saída do s
 $_SESSION['system_messages'] = $msg;
 
 header("Location: ../index.php");
+exit();
 ?>

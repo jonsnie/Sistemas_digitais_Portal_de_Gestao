@@ -2,8 +2,6 @@
 	error_reporting(0);
 	session_start();
 	require("libs/php/sessao.php");
-
-
 ?>
 <!doctype html>
 <html class="fixed">
@@ -39,6 +37,8 @@
 
 
 
+
+
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"
 			integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
 			crossorigin=""/>
@@ -65,7 +65,16 @@
 		<link  href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 
 
-
+		<style>
+			.select2-selection__rendered {line-height: 32px !important;	}
+			.select2-selection 					 {height: 34px !important;		  }
+			.box_shadow
+			{
+			  -webkit-box-shadow: 10px 10px 56px -12px rgba(0,0,0,0.3);
+			  -moz-box-shadow: 10px 10px 56px -12px rgba(0,0,0,0.3);
+			  box-shadow: 10px 10px 56px -12px rgba(0,0,0,0.3);
+			}
+		</style>
 	</head>
 	<body>
 		<section class="body">
@@ -125,6 +134,7 @@
 		<script src="assets/vendor/pnotify/pnotify.custom.js"></script>
 		<script src="assets/vendor/intercooler/intercooler-0.4.8.js"></script>
 		<script src="assets/vendor/jquery-mockjax/jquery.mockjax.js"></script>
+		<script src="assets/vendor/gauge/gauge.js"></script>
 
 		<script src="http://oss.maxcdn.com/jquery.form/3.50/jquery.form.min.js"></script>
 
