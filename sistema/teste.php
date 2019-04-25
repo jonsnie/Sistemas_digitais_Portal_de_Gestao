@@ -205,6 +205,3 @@ exit();
 <script>
   $('.select2').select2();
 </script>
-<?
-  unset($_SESSION["company_id"]);
-?>

@@ -62,20 +62,32 @@
           <li class="nav-parent">
             <a><i class="fa fa-bank" aria-hidden="true"></i><span>Aplicações</span></a>
             <ul class="nav nav-children">
-              <li><a href="eri/index.php">Estacionamento Rotativo</a></li>
-              <li><a href="oct/index.php">Ocorrências de Trânsito</a></li>
+              <!--<li><a href="erg/index.php">Estacionamento Rotativo</a></li>-->
+              <li><a href="oct/ocorrencias.php">Ocorrências de Trânsito</a></li>
 
 
 <?  if($_SESSION['id']==1){ ?>
   <li class="nav-parent">
     <a><span>Sistema de gestão</span></a>
     <ul class="nav nav-children">
+        <li><a href="oct/index.php">Sistema</a></li>
+        <li><a href="oct/ocorrencias.php">Ocorrências</a></li>
+        <li><a href="oct/dashboard.php">Evolução mensal</a></li>
+        <li><hr></li>
         <li><a href="#">Diário administrativo</a></li>
         <li><a href="#">Turnos</a></li>
-        <li><a href="oct/index.php">Ocorrências</a></li>
+
         <li><a href="#">Evolução diária</a></li>
-        <li><a href="oct/dashboard.php">Evolução mensal</a></li>
+
         <li><a href="#">Configurações</a></li>
+    </ul>
+  </li>
+
+
+  <li class="nav-parent">
+    <a><span>SERP</span></a>
+    <ul class="nav nav-children">
+        <li><a href="erg/index.php">Gestão</a></li>
     </ul>
   </li>
 <?  } ?>

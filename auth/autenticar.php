@@ -27,7 +27,14 @@ if(isset($username) && isset($password)){
 }else{   $_SESSION['error'] = "Usuário ou senha não podem estar em branco.";}
 
 
-if($_SESSION['auth']=="true"){ header("Location: ../index_sistema.php?modulo=".$modulo); }
-else 								 			   { header("Location: ../index.php");         }
+if($_SESSION['auth']=="true"){
+		if($modulo == "ERG"){
+			header("Location: ../index_erg.php?modulo=".$modulo); 
+		}else{
+			header("Location: ../index_sistema.php?modulo=".$modulo);
+		}
+}else{
+		header("Location: ../index.php");
+}
 
 ?>

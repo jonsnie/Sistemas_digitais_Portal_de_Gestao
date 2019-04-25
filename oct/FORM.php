@@ -63,7 +63,7 @@
         <ol class="breadcrumbs">
           <li><a href="index_sistema.php"><i class="fa fa-home"></i></a></li>
           <li><span class='text-muted'>Aplicações</span></li>
-          <li><a href='oct/index.php?filtro_data=<?=$_GET['filtro_data'];?>'>Ocorrências de trânsito</a></li>
+          <li><a href='oct/ocorrencias.php?filtro_data=<?=$_GET['filtro_data'];?>'>Ocorrências de trânsito</a></li>
           <li><span class='text-muted'><?=$txt_bread;?></span></li>
         </ol>
       </div>
@@ -242,7 +242,7 @@
 
       <div class="btn-group">
           <!--<button id="bt_voltar" type="button" class="btn btn-default loading">Voltar</button>-->
-          <a href="oct/index.php?filtro_data=<?=$_GET['filtro_data'];?>" class="btn btn-default loading">Voltar</a>
+          <a href="oct/ocorrencias.php?filtro_data=<?=$_GET['filtro_data'];?>" class="btn btn-default loading">Voltar</a>
           <div class="btn-group dropup">
             <!--<a class="btn btn-warning dropdown-toggle" data-toggle="dropdown"><?=$dados['status'];?> <span class="caret"></span></a>-->
             <button type="button" id="bt_status" class="btn btn-warning dropdown-toggle disable_button" data-toggle="dropdown" ajax="false">Alterar Status <span class="caret"></span></button>
@@ -627,14 +627,14 @@
       <?
           if($acao == "inserir")
           {
-            echo "<a href='oct/index.php?filtro_data=".$_GET['filtro_data']."' class='btn btn-default loading'>Voltar</a> ";
+            echo "<a href='oct/ocorrencias.php?filtro_data=".$_GET['filtro_data']."' class='btn btn-default loading'>Voltar</a> ";
             echo "<button id='bt_inserir_oc' type='submit' class='btn btn-primary'>Inserir ocorrência</button>";
           }else {
 
       ?>
           <div class="btn-group">
               <!--<button id="bt_voltar" type="button" class="btn btn-default loading">Voltar</button>-->
-              <a href="oct/index.php?filtro_data=<?=$_GET['filtro_data'];?>" class="btn btn-default loading">Voltar</a>
+              <a href="oct/ocorrencias.php?filtro_data=<?=$_GET['filtro_data'];?>" class="btn btn-default loading">Voltar</a>
               <div class="btn-group dropup">
     						<!--<a class="btn btn-warning dropdown-toggle" data-toggle="dropdown"><?=$dados['status'];?> <span class="caret"></span></a>-->
                 <button type="button" id="bt_status" class="btn btn-warning dropdown-toggle disable_button" data-toggle="dropdown" ajax="false">Alterar Status <span class="caret"></span></button>
@@ -671,7 +671,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form id="form_filtro" action="oct/index.php" method="post">
+      <form id="form_filtro" action="oct/ocorrencias.php" method="post">
       <div class="modal-body">
         <div class="row">
           <div class="col-sm-4" style="">

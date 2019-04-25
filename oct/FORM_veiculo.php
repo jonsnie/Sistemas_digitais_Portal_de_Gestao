@@ -29,7 +29,7 @@
         <ol class="breadcrumbs">
           <li><a href="index_sistema.php"><i class="fa fa-home"></i></a></li>
           <li><span class='text-muted'>Aplicações</span></li>
-          <li><a href='oct/index.php'>Ocorrências de trânsito</a></li>
+          <li><a href='oct/ocorrencias.php'>Ocorrências de trânsito</a></li>
           <li><a href='oct/FORM.php?id=<?=$_GET['id']?>'>Ocorrência n.<?=$_GET['id'];?></a></li>
           <li><span class='text-muted'>Veículos Envolvidos</span></li>
         </ol>

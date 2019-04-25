@@ -134,7 +134,7 @@ margin-top: 50px;
 						<div class="col-sm">
 								<h4 class="titulo">Aplicações</h4>
 								<a href="index2.php?param=rot" class="btn btn-danger btn-lg btn-block">Registro de ocorrência de trânsito</a>
-								<a href="index2.php?param=eri" class="btn btn-warning btn-lg btn-block"><span style="color:white">Estacionamento Rotativo Gratuito</span></a>
+								<a href="index2.php?param=erg" class="btn btn-warning btn-lg btn-block"><span style="color:white">Sistema de Estacionamento Rotativo Público - SERP</span></a>
 								<a href="index2.php?param=smart" class="btn btn-success btn-lg btn-block">Smart Mobility</a>
 								<a href="index2.php?param=portal" class="btn btn-primary btn-lg btn-block">Portal de gestão</a>
 						</div>

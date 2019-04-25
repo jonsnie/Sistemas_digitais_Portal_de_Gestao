@@ -21,12 +21,12 @@
 
 <?
   $sql = "SELECT
-          	C.name as company_name, C.acron as company_acron,
+          	C.name as ccompany_name, C.acron as ccompany_acron,
           	U.*
           FROM
           	   sepud.users   U
           JOIN sepud.company C ON C.id = U.id_company
-          ORDER BY U.id DESC";
+          ORDER BY C.acron, U.name ASC";
   $rs  = pg_query($conn_neogrid,$sql);
   if(!pg_num_rows($rs))
   {
@@ -83,7 +83,7 @@
     echo "<td class='text-muted'>".$d['id']."</td>";
     echo "<td>".$d['name']."</td>";
     //echo "<td>".$d['email']."</td>";
-    echo "<td class='text-center'>".$d['company_acron']."</td>";
+    echo "<td class='text-center'>".$d['ccompany_acron']."</td>";
     //echo "<td class='text-center'>".$d['area']."</td>";
     //echo "<td class='text-center'>".$d['job']."</td>";
 
