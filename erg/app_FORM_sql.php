@@ -8,7 +8,41 @@
 
     if($acao == "inserir" && (($license_plate_letters && $license_plate_numbers != "") || $license_plate_numbers_mercosul != ""))
     {
+
+
       $agora     = now();
+
+      //////////////////////////////////////////////////////////
+      //Bloqueios de inserção após o horario final de operação//
+      //Dia de semana após as 18:30
+      if(($agora['dia_semana']>=1 && $agora['dia_semana']<=5) && (($agora['hora']>=18 && $agora['min']>=30) || $agora['hora']>=19))
+      {
+        header("Location: app_FORM.php?erro=fora_do_horario");
+        exit();
+      }
+      //Sabado após as 13h ou domingo o dia todo
+      if(($agora['dia_semana']==6 && $agora['hora']>13) || $agora['dia_semana']==7)
+      {
+        header("Location: app_FORM.php?erro=fora_do_horario");
+        exit();
+      }
+      //////////////////////////////////////////////////////////
+
+      //Registro dia de semana antes das 08:30 (Seg a Sex - 8:30 a 18:30)
+      if(($agora['dia_semana']>=1 && $agora['dia_semana']<=5) && (($agora['hora']<=8 && $agora['min']<=29) || $agora['hora']<=7))
+      {
+        $agora['datatimesrv'] = $agora['datasrv']." 08:30:00";
+      }
+
+      //Registro SÁBADO antes das 08:00 (Sab - 8:00 a 13:00)
+      if($agora['dia_semana']==6 && $agora['hora']<=7)
+      {
+        $agora['datatimesrv'] = $agora['datasrv']." 08:00:00";
+      }
+
+
+
+
       $timestamp = $agora['datatimesrv'];
       if($license_plate_numbers != ""){ $placa = $license_plate_letters.$license_plate_numbers;         }
       else                            { $placa = $license_plate_numbers_mercosul;}
@@ -56,7 +90,7 @@
     {
         $agora = now();
         $sql = "UPDATE sepud.eri_schedule_parking
-                SET notified = true, notified_timestamp = '".$agora['datatimesrv']."'
+                SET notified = true, notified_timestamp = '".$agora['datatimesrv']."', id_user_notified = '".$_SESSION['id']."'
                 WHERE id = '".$id."'";
         pg_query($sql)or die("Erro ".__LINE__."<br>SQL: ".$sql);
 
@@ -66,11 +100,25 @@
         exit();
     }
 
+    if($acao == "guinchar" && $id != "")
+    {
+        $agora = now();
+        $sql = "UPDATE sepud.eri_schedule_parking
+                SET winch_timestamp = '".$agora['datatimesrv']."', id_user_winch = '".$_SESSION['id']."'
+                WHERE id = '".$id."'";
+        pg_query($sql)or die("Erro ".__LINE__."<br>SQL: ".$sql);
+
+        logger("Guinchamento","ERG - Registro","Registro ID: ".$id);
+
+        header("Location: app_FORM.php?id=".$id);
+        exit();
+    }
+
     if($acao == "baixar" && $id != "")
     {
         $agora = now();
         $sql = "UPDATE sepud.eri_schedule_parking
-                SET closed = true, closed_timestamp = '".$agora['datatimesrv']."'
+                SET closed = true, closed_timestamp = '".$agora['datatimesrv']."', id_user_closed = '".$_SESSION['id']."'
                 WHERE id = '".$id."'";
         pg_query($sql)or die("Erro ".__LINE__."<br>SQL: ".$sql);
 

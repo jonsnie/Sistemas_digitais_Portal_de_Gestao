@@ -16,7 +16,7 @@
             </div>
 
 
-<? if($_SESSION["id"]==122){ ?>
+<? /* if($_SESSION["id"]==1){ ?>
 
             <div class="row" style="margin-bottom:10px">
                 <div class="form-group">
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-<? } ?>
+<? } */ ?>
               <div class="row" style="margin-bottom:10px">
                 <div class="col-sm-12">
                     <hr />Ou apenas:

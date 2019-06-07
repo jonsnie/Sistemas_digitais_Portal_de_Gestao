@@ -18,11 +18,13 @@ function setenvs()
 
 function logger($action, $module = "Null", $obs = "Null")
 {
+  if($module != "Null"){ $module = "'".$module."'"; }
 
-  $id_user = ($_SESSION['id']!=""?$_SESSION['id']:"'Null'");
-	$agora = now();
+  $id_user = ($_SESSION['id']!=""?$_SESSION['id']:"Null");
+
+  $agora = now();
 	$sql = "INSERT INTO sepud.logs(ip, id_user, module, action, timestamp, obs)
-					VALUES ('".$_SERVER['REMOTE_ADDR']."', $id_user, '".$module."','".$action."','".$agora['datatimesrv']."', '".$obs."')";
+					VALUES ('".$_SERVER['REMOTE_ADDR']."', $id_user, ".$module.",'".$action."','".$agora['datatimesrv']."', '".$obs."')";
 	pg_query($sql)or die("Erro ".__LINE__."<hr>".pg_last_error()."<hr>".$sql);
 }
 
@@ -58,6 +60,7 @@ function now($ret = "todos"){
 	$data['dthms']      = $data['data']." ".$data['hm'].":".$data['seg'];
 	$data['mkt']        = $mkt;
 	$data['ultimo_dia'] = date('t',$mkt);
+  $data['dia_semana'] = date('N',$mkt);
 
 	switch($data['mes'])
 	{
@@ -104,19 +107,22 @@ if($aux[1] != ""){  return $data." ".$tmp[1]; }
 
 function mkt2date($mkt){
 	if($mkt != ""){
-			$data['dia']  = date('d',$mkt);
-			$data['mes']  = date('m',$mkt);
-			$data['ano']  = date('Y',$mkt);
-			$data['hora'] = date('H',$mkt);
-			$data['min']  = date('i',$mkt);
-			$data['seg']  = date('s',$mkt);
-			$data['data'] = $data['dia'].'/'.$data['mes'].'/'.$data['ano'];
-			$data['hm']   = $data['hora'].':'.$data['min'];
-			$data['hms']  = $data['hora'].':'.$data['min'].':'.$data['seg'];
-			$data['dthm'] = $data['data']." ".$data['hm'];
-			$data['dthms'] = $data['data']." ".$data['hm'].":".$data['seg'];
-			$data['mkt']  = $mkt;
-			$data['ultimo_dia']  = date('t',$mkt);
+      $data['dia']        = date('d',$mkt);
+      $data['mes']        = date('m',$mkt);
+      $data['ano']        = date('Y',$mkt);
+      $data['hora']       = date('H',$mkt);
+      $data['min']        = date('i',$mkt);
+      $data['seg']        = date('s',$mkt);
+      $data['data']       = $data['dia'].'/'.$data['mes'].'/'.$data['ano'];
+      $data['datasrv']    = $data['ano'].'-'.$data['mes'].'-'.$data['dia'];
+      $data['datatimesrv']= $data['ano'].'-'.$data['mes'].'-'.$data['dia']." ".$data['hora'].':'.$data['min'].':'.$data['seg'];
+      $data['hm']         = $data['hora'].':'.$data['min'];
+      $data['hms']        = $data['hora'].':'.$data['min'].':'.$data['seg'];
+      $data['dthm']       = $data['data']." ".$data['hm'];
+      $data['dthms']      = $data['data']." ".$data['hm'].":".$data['seg'];
+      $data['mkt']        = $mkt;
+      $data['ultimo_dia'] = date('t',$mkt);
+      $data['dia_semana'] = date('N',$mkt);
 			switch($data['mes'])
 			{
 				case '01': $data['mes_txt_c'] = "Jan"; $data['mes_txt'] = "Janeiro";   break;

@@ -6,7 +6,7 @@
   $agora        = now();
   $data_atual   = $agora['data'];
   $data_db      = $agora['datasrv'];
-  $filtro_ativo = " OR  EV.active = 't'";
+  //$filtro_ativo = " OR  EV.active = 't'";
   $hoje         = time();
 
 
@@ -34,13 +34,14 @@
     $proximo    = $_GET['filtro_data'] + (24*3600);
     $data_atual = date("d/m/Y", $_GET['filtro_data']);
     $data_db    = date("Y-m-d", $_GET['filtro_data']);
-    $filtro_ativo = "";
+    //$filtro_ativo = " OR (EV.id_company = '".$_SESSION['id_company']."' AND EV.active = 't')";
   }else {
     $anterior = $hoje - (24*3600);
     $proximo  = $hoje + (24*3600);
+    $filtro_ativo = " OR (EV.id_company = '".$_SESSION['id_company']."' AND EV.active = 't')";
   }
 
-  if($proximo >= $hoje){ $proximo = $hoje; $bt_prox = false; $filtro_ativo = " OR  EV.active = 't'"; }else{ $bt_prox = true; }
+if($proximo >= $hoje){ $proximo = $hoje; $bt_prox = false; /*$filtro_ativo = " OR  EV.active = 't'";*/ }else{ $bt_prox = true; }
 
 
 
@@ -55,31 +56,29 @@
                EV.active,
                EV.address_reference,
                EV.id_street,
-               C.name as company,
+               C.id    as id_company,
+               C.name  as company,
                C.acron as company_acron,
-               S.name as street_name,
+               S.name  as street_name,
                (SELECT COUNT(*) FROM sepud.oct_victim                WHERE id_events = EV.ID) as vitimas_encontradas,
                (SELECT COUNT(*) FROM sepud.oct_rel_events_providence WHERE id_event  = EV.id) as qtd_providencias,
                (SELECT COUNT(*) FROM sepud.oct_rel_events_images     WHERE id_events = EV.id) as qtd_fotos
          FROM
-               sepud.oct_events AS EV
+               sepud.oct_events     AS  EV
          JOIN  sepud.oct_event_type AS EVT ON EV.id_event_type = EVT.id
-         JOIN  sepud.users AS U ON U.id = EV.id_user
-         JOIN  sepud.company AS C ON C.id = U.id_company
-         LEFT JOIN sepud.streets AS S ON S.id = EV.id_street
-         WHERE";
+        --JOIN  sepud.users          AS   U ON U.id = EV.id_user AND U.id_company = '".$_SESSION['id_company']."'
+         JOIN  sepud.company        AS   C ON C.id = EV.id_company
+         LEFT JOIN sepud.streets    AS   S ON S.id = EV.id_street
+         WHERE ";
 
          if($filtro_placa != "")
          {
-           $sql .= "    EV.id in (".$filtro_placa.")";
+           $sql .= " EV.id in (".$filtro_placa.")";
          }else {
-           $sql .= "    (EV.date BETWEEN '".$data_db." 00:00:00' AND '".$data_db." 23:59:59') ".$filtro_ativo;
+           $sql .= " (EV.id_company = '".$_SESSION['id_company']."' AND EV.date BETWEEN '".$data_db." 00:00:00' AND '".$data_db." 23:59:59')".$filtro_ativo;
          }
+         $sql .= " ORDER BY EV.id DESC";
 
-
-
-
-    $sql .= "   ORDER BY EV.id DESC";
  $rs  = pg_query($conn_neogrid,$sql);
  $total_oc = 0;
  while($d = pg_fetch_assoc($rs))
@@ -91,6 +90,8 @@
 
      $total_oc++;
  }
+
+//if($_SESSION['id']=="109"){ echo "<div class='' style='width:800px;margin-left:200px'>".$sql."</div>";}
 
  if(isset($eventos_com_providencia) && count($eventos_com_providencia))
  {

@@ -123,7 +123,7 @@
                     			 T.name event_name, T.type as event_type FROM sepud.oct_events E
                     JOIN sepud.oct_event_type T ON T.id = E.id_event_type
                     JOIN sepud.users          U ON U.id = E.id_user
-                    JOIN sepud.company        C ON C.id = U.id_company
+                    JOIN sepud.company        C ON C.id = E.id_company
                     WHERE E.date BETWEEN '".$filtro_data["ano"]."-".$filtro_data["mes"]."-01 00:00:00'
                                      AND '".$filtro_data["ano"]."-".$filtro_data["mes"]."-".$filtro_data["ultimo_dia"]." 23:59:59'";
             $res = pg_query($conn_neogrid,$sql) or die("Error ".__LINE__."<br>".$sql);

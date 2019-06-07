@@ -4,17 +4,29 @@
   require_once("../libs/php/conn.php");
 
   $id = $_GET['id'];
+  $sistema_nao_config = false;
   if($id != "")
   {
-      $sql   = "SELECT EV.*,
-                       U.company,
-                       U.company_acron
-                FROM  sepud.oct_events EV
-                JOIN  sepud.users AS U ON U.id = EV.id_user
-                WHERE EV.id = '".$id."'";
+      $sql   = "SELECT
+                    W.opened as workshift_opened,
+                    W.closed as workshift_closed,
+                    W.period as workshift_period,
+                    EV.*
+                FROM
+                          sepud.oct_events    EV
+                     JOIN sepud.users         U  ON U.ID = EV.id_user
+                LEFT JOIN sepud.oct_workshift W  ON W.id = EV.id_workshift
+                WHERE EV.ID =  '".$id."'";
       $res   = pg_query($conn_neogrid,$sql)or die("Error ".__LINE__);
       $dados = pg_fetch_assoc($res);
 
+      if($dados['id_workshift']!="")
+      {
+        $turno['id']     = $dados['id_workshift'];
+        $turno['opened'] = $dados['workshift_opened'];
+        $turno['closed'] = $dados['workshift_closed'];
+        $turno['period'] = $dados['workshift_period'];
+      }
 
       $sql = "SELECT * FROM sepud.oct_rel_events_event_conditions WHERE id_events = '".$id."'";
       $res   = pg_query($conn_neogrid,$sql)or die("Error ".__LINE__);
@@ -42,8 +54,16 @@
       $dados['company']       = $_SESSION['company'];
       $agora = now();
       $txt_bread = "Nova ocorrência";
-
+      $sql        = "SELECT * FROM sepud.oct_workshift WHERE id_company = ".$_SESSION['id_company']." AND closed is null";
+      $resTurno   = pg_query($sql)or die("Erro ".__LINE__);
+      if(pg_num_rows($resTurno))
+      {
+          $turno = pg_fetch_assoc($resTurno);
+      }
   }
+
+
+
 ?>
 
 <form id="form_oct" action="oct/FORM_sql.php" method="post">
@@ -53,7 +73,6 @@
           if($acao == "inserir")
           {
               echo "<h2>Nova ocorrência</h2>";
-              //print_r_pre($agora);
           }else{
               echo "<h2>Ocorrência n° ".str_pad($_GET['id'],3,"0",STR_PAD_LEFT)."</h2>";
           }
@@ -70,7 +89,21 @@
     </header>
     <section class="panel">
       <header class="panel-heading">
-        <h4><span class="text-muted">Status: </span><strong><i id='txt_status'><?=$dados['status'];?></i></strong></h4>
+        <h4><span class="text-muted">Status: </span><strong><i id='txt_status'><?=$dados['status'];?></i></strong>
+                  <?
+                      if(isset($turno))
+                      {
+                        echo "<br><small class='text-muted'>Turno nº <b>".str_pad($turno['id'],5,"0",STR_PAD_LEFT)."</b> - ".$turno['period']. " - ";
+                        if($turno['closed']!=""){ echo " <span class='text-warning'>Turno fechado</span>";}else{ echo " <span class='text-success'>Turno aberto</span>";}
+                        echo "<br>Início: <b>".formataData($turno['opened'],1)."</b>";
+                        if($turno['closed']!=""){echo ", fim: <b>".formataData($turno['closed'],1)."</b>";}
+                        echo "</small>";
+                        echo "<input type='hidden' name='id_workshift' value='".$turno['id']."' />";
+                      }else{
+                        echo "<br><small class='text-danger'>Nenhum turno de trabalho aberto.</small>";
+                      }
+                  ?>
+       </h4>
         <input type="hidden" id="status" name="status" value="<?=$dados['status'];?>" >
         <div class="panel-actions"><h4 class="text-right"><span class="text-muted"></span><strong><i><?=$dados['company_acron'];?></i><br><small><?=$dados['company'];?></small></strong></h4></div>
       </header>
@@ -84,35 +117,40 @@
           						<label class="control-label" for="tipo_oc">Ocorrência:</label>
               							<select id="tipo_oc" name="tipo_oc" class="form-control select2 changefield">
               								<?
-                              if(isset($_SESSION["company_id"]))
+                              if(isset($_SESSION["id_company"]))
                               {
                                   $sql = "SELECT T.* FROM sepud.oct_event_type T
-                                          JOIN sepud.oct_rel_event_type_company R ON R.id_event_type = T.id AND R.id_company = '".$_SESSION["company_id"]."'
+                                          JOIN sepud.oct_rel_event_type_company R ON R.id_event_type = T.id AND R.id_company = '".$_SESSION["id_company"]."'
                                           WHERE T.active = true
                                           ORDER BY T.name ASC";
+
+                                  $res = pg_query($conn_neogrid,$sql)or die("Error: ".__LINE__);
+
+                                  if(pg_num_rows($res))
+                                  {
+                                          while($d = pg_fetch_assoc($res))
+                                          {
+                                              $vet[$d['type']][] = $d;
+                                          }
+                                          foreach($vet as $type => $d)
+                                          {
+                                            echo "<optgroup label='".$type."'>";
+                                              for($i = 0; $i < count($d); $i++)
+                                              {
+                                                if($d[$i]['name_acron'] != ""){ $acron = $d[$i]['name_acron']." - ";}else{$acron = "";}
+                                                if($dados['id_event_type'] == $d[$i]['id']){ $sel = "selected"; }else{ $sel = ""; }
+                                                echo "<option value='".$d[$i]['id']."' $sel>".$acron.$d[$i]['name']."</option>";
+                                              }
+                                            echo "</optgroup>";
+                                          }
+                                  }else{
+                                      echo "<option value=''>Nenhuma ocorrência associada a este orgão</option>";
+                                      $sistema_nao_config = true;
+                                  }
                               }else {
-                                  $sql = "SELECT * FROM sepud.oct_event_type WHERE active = true ORDER BY name ASC";
-                             }
-
-                                $res = pg_query($conn_neogrid,$sql)or die("Error: ".__LINE__);
-                                while($d = pg_fetch_assoc($res))
-                                {
-                                    $vet[$d['type']][] = $d;
-
-                                  //if($dados['id_event_type'] == $d['id']){ $sel = "selected"; }else{ $sel = ""; }
-                                  //echo "<option value='".$d['id']."' $sel>".$d['name']."</option>";
-                                }
-                                foreach($vet as $type => $d)
-                                {
-                                  echo "<optgroup label='".$type."'>";
-                                    for($i = 0; $i < count($d); $i++)
-                                    {
-                                      if($d[$i]['name_acron'] != ""){ $acron = $d[$i]['name_acron']." - ";}else{$acron = "";}
-                                      if($dados['id_event_type'] == $d[$i]['id']){ $sel = "selected"; }else{ $sel = ""; }
-                                      echo "<option value='".$d[$i]['id']."' $sel>".$acron.$d[$i]['name']."</option>";
-                                    }
-                                  echo "</optgroup>";
-                                }
+                                echo "<option value=''>Usuário não associado ao orgão em que trabalho</option>";
+                                $sistema_nao_config = true;
+                              }
                               ?>
               							</select>
           					</div>
@@ -216,8 +254,6 @@
                                  <label class="control-label" for="condicoes[]">Condições:</label>
                                    <select size='10' multiple data-plugin-selectTwo id="condicoes[]" name="condicoes[]" class="form-control populate changefield">
                                      <?
-                                    //   $aux = json_decode($dados['event_conditions']);
-
                                        $sql = "SELECT * FROM sepud.oct_event_conditions ORDER BY subtype ASC";
                                        $res = pg_query($conn_neogrid,$sql)or die("Error: ".__LINE__);
                                        while($d = pg_fetch_assoc($res)){ $v[$d['type']][] = $d; }
@@ -236,7 +272,7 @@
                          </div>
               </div>
 
-<? if($_SESSION['id']==1){ ?>
+
   <div class="row">
     <div class="col-sm-12" style="margin-top:10px">
 
@@ -262,7 +298,7 @@
 
     </div>
   </div>
-<? } ?>
+
 
 
               <div class="row" style="margin-top:15px">
@@ -628,7 +664,12 @@
           if($acao == "inserir")
           {
             echo "<a href='oct/ocorrencias.php?filtro_data=".$_GET['filtro_data']."' class='btn btn-default loading'>Voltar</a> ";
-            echo "<button id='bt_inserir_oc' type='submit' class='btn btn-primary'>Inserir ocorrência</button>";
+            if(!$sistema_nao_config)
+            {
+              echo "<button id='bt_inserir_oc' type='submit' class='btn btn-primary'>Inserir ocorrência</button>";
+            }else {
+              echo "<div class='row'><div class='col-md-6 col-md-offset-3'><div class='alert alert-danger text-center'>Sistema ou perfil de usuário não esta completamente configurado.</div></div></div>";
+            }
           }else {
 
       ?>

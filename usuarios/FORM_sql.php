@@ -71,7 +71,8 @@
                         job         = '".$job."',
                         id_company  = '".$id_company."',
                         phone       = '".$phone."',
-                        observation = '".$observation."'
+                        observation = '".$observation."',
+                        active      = '".$active."'
                   WHERE id = '".$id."'";
       pg_query($sql)or die("Erro ".__LINE__."<br>SQL: ".$sql);
 

@@ -8,7 +8,7 @@ extract($_POST);
 $_SESSION['auth'] = "false";
 
 if(isset($username) && isset($password)){
-	$res = pg_prepare($conn_neogrid, "qry1", "SELECT U.id, U.name, U.area, U.job, U.active, U.in_ativaction, U.phone, U.cpf, U.date_of_birth, C.name as company_name, C.acron as company_acron, C.id as company_id FROM sepud.users U JOIN sepud.company C ON C.id = U.id_company WHERE U.email = $1 AND U.password = md5($2)");
+	$res = pg_prepare($conn_neogrid, "qry1", "SELECT U.id, U.name, U.area, U.job, U.active, U.in_ativaction, U.phone, U.cpf, U.date_of_birth, C.name as company_name, C.acron as company_acron, C.id as id_company FROM sepud.users U JOIN sepud.company C ON C.id = U.id_company WHERE U.email = $1 AND U.password = md5($2)");
 	$res = pg_execute($conn_neogrid, "qry1", array($username,$password));
 	if(pg_num_rows($res)==1)
 	{
@@ -29,7 +29,7 @@ if(isset($username) && isset($password)){
 
 if($_SESSION['auth']=="true"){
 		if($modulo == "ERG"){
-			header("Location: ../index_erg.php?modulo=".$modulo); 
+			header("Location: ../index_erg.php?modulo=".$modulo);
 		}else{
 			header("Location: ../index_sistema.php?modulo=".$modulo);
 		}

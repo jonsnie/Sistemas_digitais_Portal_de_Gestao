@@ -9,12 +9,12 @@
     $datafinal = $data." ".$hora;
 
 
-    if($acao == "inserir" && $userid != "")
+    if($acao == "inserir" && $userid != "" && $_SESSION['id_company'])
     {
 
-      if($id_street == "")    { $id_street="Null";     }else{ $id_street     = "'".$id_street."'";     }
+      if($id_street     == ""){ $id_street    ="Null"; }else{ $id_street     = "'".$id_street."'";     }
       if($street_number == ""){ $street_number="Null"; }else{ $street_number = "'".$street_number."'"; }
-
+      if($id_workshift  == ""){ $id_workshift ="Null"; }else{ $id_workshift  = "'".$id_workshift."'";  }
 
         $sql = "INSERT INTO sepud.oct_events
                     (date,
@@ -27,7 +27,9 @@
                      victim_inform,
                      id_user,
                      id_street,
-                    street_number)
+                     street_number,
+                     id_company,
+                     id_workshift)
               VALUES ('".$datafinal."',
                       '".$description."',
                       '".$endereco."',
@@ -38,9 +40,11 @@
                       '".$victim_inform."',
                       '".$userid."',
                       ".$id_street.",
-                      ".$street_number.") returning id";
+                      ".$street_number.",
+                      '".$_SESSION['id_company']."',
+                      ".$id_workshift.") returning id";
 
-        $res = pg_query($sql) or die("Erro ".__LINE__);
+        $res = pg_query($sql) or die("Erro ".__LINE__."SQL: ".$sql);
         $aux = pg_fetch_assoc($res);
 
         logger("Inserção","OCT", "Ocorrência n.".$aux['id']);

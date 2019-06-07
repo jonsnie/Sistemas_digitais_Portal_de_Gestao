@@ -66,7 +66,7 @@
               <li><a href="oct/ocorrencias.php">Ocorrências de Trânsito</a></li>
 
 
-<?  if($_SESSION['id']==1){ ?>
+<?  if($_SESSION['id']==1 || $_SESSION['id']==108 || $_SESSION['id']==109||$_SESSION['id']==110){ ?>
   <li class="nav-parent">
     <a><span>Sistema de gestão</span></a>
     <ul class="nav nav-children">
@@ -76,22 +76,24 @@
         <li><hr></li>
         <li><a href="#">Diário administrativo</a></li>
         <li><a href="#">Turnos</a></li>
-
         <li><a href="#">Evolução diária</a></li>
-
         <li><a href="#">Configurações</a></li>
     </ul>
   </li>
 
 
-  <li class="nav-parent">
-    <a><span>SERP</span></a>
-    <ul class="nav nav-children">
-        <li><a href="erg/index.php">Gestão</a></li>
-    </ul>
-  </li>
-<?  } ?>
 
+<?  } ?>
+<li class="nav-parent">
+  <a><span>SERP</span></a>
+  <ul class="nav nav-children">
+      <li><a href="erg/index.php">Dashboard</a></li>
+      <li><a href="erg/rel_autuados.php">Autuações</a></li>
+<?  if($_SESSION['id']==1 || $_SESSION['id']==35){ ?>
+      <li><a href="erg/vagas.php">vagas</a></li>
+<? } ?>
+  </ul>
+</li>
 
             </ul>
           </li>
@@ -109,10 +111,13 @@
             </ul>
           </li>
 -->
+<?  if($_SESSION['id']==1 || $_SESSION['id']==35){ ?>
           <li class="nav-parent">
             <a><i class="fa fa-cogs" aria-hidden="true"></i><span>Configurações</span></a>
             <ul class="nav nav-children">
+
               <li><a href="usuarios/index.php">Usuários</a></li>
+
 <!--
               <li><a href="#" ic-get-from="#" ic-target="#wrap">Servidores</a></li>
               <li><a href="#" ic-get-from="#" ic-target="#wrap">Serviços</a></li>
@@ -125,6 +130,8 @@
 <? } ?>
             </ul>
           </li>
+<? } ?>
+
         </ul>
       </nav>
 

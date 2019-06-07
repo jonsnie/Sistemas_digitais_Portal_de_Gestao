@@ -2,9 +2,31 @@
   session_start();
   require_once("../libs/php/funcoes.php");
   require_once("../libs/php/conn.php");
+
+
   $agora = now();
 
-  logger("Acesso","SERP - App");
+
+
+  //////////////////////////////////////////////////////////
+  //Bloqueios da contagem de tempo para os registros em aberto após o horario final de operação//
+  //Dia de semana após as 18:30
+  if(($agora['dia_semana']>=1 && $agora['dia_semana']<=5) && (($agora['hora']>=18 && $agora['min']>=30) || $agora['hora']>=19))
+  {
+    $agora['datatimesrv'] = $agora['datasrv']." 18:30:00";
+    $agora['hora'] = 18;
+    $agora['min']  = 30;
+  }
+  //Sabado após as 13h ou domingo o dia todo
+  if($agora['dia_semana']==6 && $agora['hora']>13)
+  {
+    $agora['datatimesrv'] = $agora['datasrv']." 13:00:00";
+    $agora['hora'] = 13;
+    $agora['min']  = 00;
+  }
+  //////////////////////////////////////////////////////////
+
+  logger("Acesso","SERP - App inicio");
 
 
   if($_GET['filtro_rua'] != "")
@@ -66,7 +88,7 @@
                 JOIN sepud.eri_parking      P ON P.id = SP.id_parking
                 JOIN sepud.streets          S ON S.id = P.id_street $filtro_rua
                 JOIN sepud.eri_parking_type T ON T.id = P.id_parking_type
-              WHERE SP.timestamp >= '".$agora['datasrv']." 00:00:00'
+              WHERE SP.timestamp BETWEEN '".$agora['datasrv']." 00:00:00' AND '".$agora['datasrv']." 23:59:59'
               --ORDER BY SP.closed ASC, SP.notified ASC,SP.timestamp ASC
               ".$sqlfiltro."
               ORDER BY S.name, P.name ASC";

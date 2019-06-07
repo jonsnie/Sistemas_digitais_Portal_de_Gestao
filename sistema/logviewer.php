@@ -59,6 +59,7 @@ logger("Acesso","Logs");
 					FROM sepud.logs L
 					LEFT JOIN sepud.users U ON U.id = L.id_user
 					--WHERE id_user <> 1
+					--WHERE L.obs like '%Baixou o%'
 					ORDER BY L.timestamp DESC
 					LIMIT 250";
 	$rs  = pg_query($sql)or die("Erro ".__LINE__);

@@ -15,9 +15,9 @@
       {
 
               $query = str_pad($query,4,"0",STR_PAD_LEFT);
-                $sql = "SELECT SP.licence_plate as is_parking, SP.id as is_parking_id,
+                $sql = "SELECT SP.licence_plate as is_parking, SP.id as is_parking_id, SP.timestamp, closed, notified,
                                S.name as street_name,
-                               P.id, P.name,
+                               P.id, P.name, P.description,
                                T.type, T.time, T.time_warning, T.multi_parking, T.observation
                         FROM sepud.eri_parking P
                         JOIN sepud.eri_parking_type T ON T.id = P.id_parking_type
@@ -38,8 +38,21 @@
                           $is_parking = "<b><span class='text-danger'>(Ocupada por ".$d['is_parking'].")</span></b>
                                          <br><a href='erg/app_FORM.php?id=".$d['is_parking_id']."' class='btn btn-sm btn-info'>Ver registro</a>";
 */
-                         $is_parking = "<br><a href='erg/app_FORM.php?id=".$d['is_parking_id']."' class='btn btn-danger'>
-                                            Vaga ocupada por ".$d['is_parking']."<br><small style='color:white'>Clique para ir para o registro</small>
+
+                        $diff     = floor((strtotime($agora['datatimesrv']) - strtotime($d['timestamp']))/60);
+                        $btnclass = "btn-default";
+                        if($d['closed']!="t" && $d['notified']!="t")
+                        {
+                          if($diff >= 0                  && $diff < $d['time_warning']){ $btnclass = "btn-success"; }
+                          if($diff >= $d['time_warning'] && $diff < $d['time']        ){ $btnclass = "btn-warning"; }
+                          if($diff >= $d['time']                                      ){ $btnclass = "btn-danger";  }
+                        }else{
+                          if($d['closed']   =="t"){ $btnclass = "btn-info"; }
+                          if($d['notified'] =="t"){ $btnclass = "btn-dark"; }
+                        }
+
+                         $is_parking = "<br><a href='erg/app_FORM.php?id=".$d['is_parking_id']."' class='btn ".$btnclass."'>
+                                            Vaga ocupada por ".$d['is_parking']." a ".$diff." min<small style='color:white'><br>(Tolerância: ".$d['time']." min)<br>Clique para ir para o registro</small>
                                         </a>";
                         }else
                         {
@@ -49,7 +62,8 @@
                               <h4>
                                 <span class='text-success'>Vaga nº <b>".$d['name']."</b></span><br>
                                 <small class='text-muted'>".$d['type']." - ".$d['time']."min
-                                <br>".$d['observation']."</small>";
+                                <br>".$d['description']."</small>";
+                                //<br>".$d['observation']."</small>";
                                 if($d['street_name']=="CHINA")
                                 {
                                   echo "<br><b class='text-warning'>Rua genérica para esta vaga,<br>favor informar o nome da rua no campo observações</b>";

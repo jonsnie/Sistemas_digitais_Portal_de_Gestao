@@ -96,6 +96,11 @@
                             <textarea class="form-control" name="observation" id="observation"><?=$d['obs'];?></textarea>
 												  </div>
 												</div>
+
+
+                      
+
+
 											</fieldset>
 
 											<hr class="dotted tall">
@@ -124,11 +129,12 @@
 											</fieldset>
 
 
-											<div class="panel-footer">
-												<div class="row">
+											<div class="panel-footer" style="height:60px">
+												<div class="row pull-right">
 														<div class="col-md-12"  style="margin-bottom:20px">
                             <input type="hidden" name="acao" value="inserir" />
-														<button type="submit" class="btn btn-primary pull-right loading">Inserir</button>
+                            <a href="usuarios/index.php"><button type="button" class="btn btn-default loading">Voltar</button></a>
+														<button type="submit" class="btn btn-primary loading">Inserir</button>
 													</div>
 												</div>
 											</div>

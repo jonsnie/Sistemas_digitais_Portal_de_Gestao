@@ -1,5 +1,5 @@
 <?
-
+  header("Content-Type: text/plain");
   session_start();
   require_once("../libs/php/funcoes.php");
   require_once("../libs/php/conn.php");
@@ -31,15 +31,15 @@
 
   logger("Acesso","SERP - Impressão","ID: ".$dados['id'].", VAGA: ".$dados['parking_code'].", PLACA: ".$dados['licence_plate']);
 
-?>
+/*
 <style type='text/css'>
 body {
    color:#000000;
    background-color:#ffffff;
    font-family:courier, courier new, serif; }
 </style>
-<?
-
+*/
+/*
   $data_entrada = explode(" ",formataData($dados['timestamp'],1));
 
   echo "&nbsp;&nbsp;&nbsp;Prefeitura de Joinville"; echo "<br>";
@@ -69,8 +69,42 @@ body {
 
   echo "_______________________________"; echo "<br>";
   echo "&nbsp;&nbsp;www.joinville.sc.gov.br"
-?>
+  */
+
+  $data_entrada = explode(" ",formataData($dados['timestamp'],1));
+
+  echo " Prefeitura de Joinville       "; echo "\n";
+  echo "        DETRANS                "; echo "\n";
+  echo "SISTEMA DE ESTACIONAMENTO      "; echo "\n";
+  echo "     ROTATIVO PÚBLICO          "; echo "\n";
+  echo "_______________________________"; echo "\n\n";
+  echo "RECIBO DE OCUPAÇÃO DE VAGA     "; echo "\n\n";
+  echo "VAGA:    ".$dados['parking_code']." (".$dados['parking_time']."min)"; echo "\n";
+  echo "RUA:     ".$dados['street_name'];   echo "\n";
+  echo "PLACA:   ".$dados['licence_plate']; echo "\n";
+  echo "ENTRADA: ".$data_entrada[0];        echo "\n";
+  echo "HORA:    ".$data_entrada[1];        echo "\n";
+
+  if($dados['closed_timestamp']  !=""){
+      $data_baixado = explode(" ",formataData($dados['closed_timestamp'],1));
+      echo "BAIXADO: ".$data_baixado[0]; echo "\n";
+      echo "HORA:    ".$data_baixado[1]; echo "\n";
+  }
+  if($dados['notified_timestamp']!=""){
+    $data_notif = explode(" ",formataData($dados['notified_timestamp'],1));
+    echo "_______________________________";
+    echo "\nVEICULO NOTIFICADO\n";
+    echo "DATA: ".$data_notif[0]; echo "\n";
+    echo "HORA: ".$data_notif[1]; echo "\n";
+  }
+
+  echo "_______________________________"; echo "\n";
+  echo "www.joinville.sc.gov.br"
+
+/*
 <script>
 //window.print();
 //window.close();
 </script>
+*/
+?>

@@ -78,6 +78,7 @@
         $aux = explode(" ",$hist['timestamp']);         $hist['timestamp']          = substr(end($aux),0,5);
         $aux = explode(" ",$hist['closed_timestamp']);  $hist['closed_timestamp']   = substr(end($aux),0,5);
         $aux = explode(" ",$hist['notified_timestamp']);$hist['notified_timestamp'] = substr(end($aux),0,5);
+        $aux = explode(" ",$hist['winch_timestamp']);   $hist['winch_timestamp']    = substr(end($aux),0,5);
 
         if($hist['parking_id'] == $dados['parking_id'] && $hist['id'] != $dados['id']){
           $class = "danger";
@@ -92,12 +93,13 @@
             $hist_linhas .= "<td>".$hist['timestamp']."</td>";
             $hist_linhas .= "<td>".$hist['closed_timestamp']."</td>";
             $hist_linhas .= "<td>".$hist['notified_timestamp']."</td>";
+            $hist_linhas .= "<td>".$hist['winch_timestamp']."</td>";
           $hist_linhas .= "</tr>";
 
       }
       if($status_hist == "notificar")
       {
-          $hist_linhas .= "<tr><td class='danger'>&nbsp;</td><td colspan='4' class='text-danger'>Veículo irregular, já ocupou anteriormente.</td></tr>";
+          $hist_linhas_foot = "<tr><td class='danger'>&nbsp;</td><td colspan='4' class='text-danger'>Veículo irregular, já ocupou esta vaga.</td></tr>";
       }
 
 
@@ -114,7 +116,7 @@
       $txt_bread              = "Novo registro";
       $classalert             = "alert-success";
       $class                  = "text-success";
-      logger("Acesso","ERG - Registro","Novo registro");
+      logger("Acesso","SERP - Registro","Novo registro");
 
   }
 ?>
@@ -168,7 +170,13 @@
                               <input type="number" pattern="\d*" class="form-control input-lg text-center" id="pesquisa" placeholder="Nº da vaga">
 
                                 <div id="vagas" class="text-center">
-    									                  <h4 class="text-warning"><i>Digite um número de vaga.</i><span style='color:white'><br>.<br>.</span></h4>
+                                        <? if($_GET['erro']=="fora_do_horario"){
+                                              echo "<h4 class='text-danger'><i><b>Não registrado</b><br>Fora do horário de operação.";
+                                           }else {
+                                             echo "<h4 class='text-warning'><i>Digite um número de vaga.";
+                                           }
+                                        ?>
+                                        </i><span style='color:white'><br>.<br>.</span></h4>
                                 </div>
 
                            </div>
@@ -230,21 +238,39 @@ echo "</div>";
 
                           <div class="col-xs-6 text-center" style="margin-top:25px">
                           <?  if($dados['notified'] != "t" && $dados['closed'] != "t")
-                            {
+                             {
 
-                              if($status != "notificar" && $status_hist != "notificar")
-                              {
-                                echo "<button type='button' class='btn btn-lg btn-block btn-default disabled' role='button' style='margin-bottom:5px'><span class='text-muted'>Notificar</span></button>";
-                              }else {
-                                echo "<a href='erg/app_FORM_sql.php?id=".$id."&acao=notificar'><button type='button' class='btn btn-lg btn-block  btn-dark  loading' role='button' style='margin-bottom:5px'>Notificar</button></a>";
-                              }
+                                        if($status != "notificar" && $status_hist != "notificar")
+                                        {
+                                          echo "<button type='button' class='btn btn-lg btn-block btn-default disabled' role='button' style='margin-bottom:5px'><span class='text-muted'>Notificar</span></button>";
+
+                                        }else {
+                                          echo "<a href='erg/app_FORM_sql.php?id=".$id."&acao=notificar'><button type='button' class='btn btn-lg btn-block  btn-dark  loading' role='button' style='margin-bottom:5px'>Notificar</button></a>";
+
+
+
+                                        }
+                              echo "<button type='button' class='btn btn-lg btn-block btn-default disabled' role='button' style='margin-bottom:5px'><span class='text-muted'>Guinchar</span></button>";
                               echo "<a href='erg/app_FORM_sql.php?id=".$id."&acao=baixar'>   <button type='button' class='btn btn-lg btn-block btn-primary loading' role='button'                         >Baixar</button></a>";
 
                             }else{
+
                               echo "<button type='button' class='btn btn-lg btn-block btn-default disabled' role='button' style='margin-bottom:5px'><span class='text-muted'>Notificar</span></button>";
+
+
+                                if($dados['notified'] == "t" && $dados['winch_timestamp'] == "")
+                                {
+                                  echo "<a href='erg/app_FORM_sql.php?id=".$id."&acao=guinchar'><button type='button' class='btn btn-lg btn-block  btn-dark  loading' role='button' style='margin-bottom:5px'>Guinchar</button></a>";
+                                }else {
+                                  echo "<button type='button' class='btn btn-lg btn-block btn-default disabled' role='button' style='margin-bottom:5px'><span class='text-muted'>Guinchar</span></button>";
+                                }
+
+
                               echo "<button type='button' class='btn btn-lg btn-block btn-default disabled' role='button'                             ><span class='text-muted'>Baixar</span></button>";
                             }
-                            //echo "<a href='erg/app_IMPRIMIR.php?id=".$id."' ajax='false' target='_blank'><button type='button' class='btn btn-lg btn-block btn-info loading' role='button' style='margin-top:5px'>Imprimir Recibo</button></a>";
+
+
+
                               echo "<button id='bt_imprimir' type='button' class='btn btn-lg btn-block btn-info' role='button' style='margin-top:5px'>Imprimir Recibo</button></a>";
                             ?>
                           </div>
@@ -266,10 +292,19 @@ echo "</div>";
                                 echo "<div id='historico_placa'>";
 
                                 echo "<table class='table table-condensed'>";
-                                echo "<thead><tr><th>Vaga</th><th>Tipo</th><th>Entrada</th><th>Baixa</th><th>Notificado</th>
+                                echo "<thead><tr><th>Vaga</th><th>Tipo</th><th>E</th><th>B</th><th>N</th><th>G</th>
                                       </tr></thead><tbody>";
                                 echo $hist_linhas;
-                                echo "</tbody></table>";
+                                echo "</tbody>
+                                <tfoot>
+                                <tr><td colspan='6' style='background:#EEEEEE'><i><b>Legenda:</b></i></td></tr>
+                                    ".$hist_linhas_foot."
+                                    <tr><td class='text-center'><b>E</b></td><td colspan='5'>Entrada</td></tr>
+                                    <tr><td class='text-center'><b>B</b></td><td colspan='5'>Baixa</td></tr>
+                                    <tr><td class='text-center'><b>N</b></td><td colspan='5'>Notificado</td></tr>
+                                    <tr><td class='text-center'><b>G</b></td><td colspan='5'>Guinchado</td></tr>
+                                </tfoot>
+                                </table>";
                                 echo "</div>";
                         }
 
@@ -322,7 +357,10 @@ $(document).ready(function() {
 
 
 $("#bt_imprimir").click(function(){
-    var open = window.open('erg/app_IMPRIMIR.php?id=<?=$id;?>', '_blank', 'location=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
+    var win = window.open('erg/app_IMPRIMIR.php?id=<?=$id;?>', '_blank', 'location=no,toolbar=no,menubar=no,scrollbars=yes,resizable=yes');
+    win.print();
+    //win.close();
+
 });
 
 $("#bt_inserir_oc").click(function(){
@@ -373,6 +411,7 @@ $("#bt_inserir_oc").click(function(){
 
   if(enviar_form)
   {
+      $(this).attr('disabled', 'disabled');
       $(this).html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde</small>");
       $("#form_eri").submit();
   }
@@ -391,7 +430,11 @@ $("#pesquisa").keyup(function(){
 
 $('#license_plate_letters').keyup(function () {
   var letras = $(this).val();
-  $(this).val( $(this).val().toUpperCase() );
+  var letrasM = $(this).val().toUpperCase();
+<? if($_SESSION['id']==35){ ?>
+  //alert(letrasM);
+<? } ?>
+  $(this).val(letrasM);
   if(letras.length == 3){ $('#license_plate_numbers').focus();}
 });
 

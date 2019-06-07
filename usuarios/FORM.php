@@ -9,7 +9,6 @@
     $sql  = "SELECT * FROM sepud.users WHERE id = '".$_GET['id']."'";
     $res  = pg_query($sql)or die("Erro ".__LINE__);
     $d    = pg_fetch_assoc($res);
-    //print_r_pre($d);
     logger("Acesso","Perfil de usuário", "Acesso aos dados: [".$_GET["id"]."] - ".$d['name']);
   }
 
@@ -128,13 +127,23 @@
 													</div>
 												</div>
 
+                        <div class="form-group">
+                          <label class="col-md-2 control-label" for="active">Status</label>
+                          <div class="col-md-10">
+                            <select class="form-control" id="active" name="active">
 
+                                <option value="t" <?=($d['active']=="t"?"selected":"");?>>Ativo</option>
+                                <option value="f" <?=($d['active']=="f"?"selected":"");?>>Inativo</option>
+
+                            </select>
+                          </div>
+                        </div>
 
 											</fieldset>
 
 
-											<div class="panel-footer">
-												<div class="row">
+											<div class="panel-footer"  style="margin-top:20px;height:60px;margin-bottom:10px;">
+												<div class="row pull-right">
 													<!--<div class="col-md-9 col-md-offset-3">-->
 														<div class="col-md-12">
 
@@ -145,7 +154,8 @@
 }else {
               echo "<input type='hidden' name='acao' value='atualizar' />";
               echo "<input type='hidden' name='id' value='".$_GET['id']."' />";
-              echo "<button type='submit' class='btn btn-primary pull-right loading'>Atualizar</button>";
+              echo "<a href='usuarios/index.php'><button type='button' class='btn btn-default loading'>Voltar</button></a>&nbsp;";
+              echo "<button type='submit' class='btn btn-primary loading'>Atualizar</button>";
 }
 ?>
   												</div>

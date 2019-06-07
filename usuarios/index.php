@@ -20,12 +20,17 @@
 
 
 <?
+
+  if($_GET['filtro']!="inativos"){ $filtro = " WHERE U.active = 't'"; $inativos=false;}
+  else{                            $filtro = " WHERE U.active = 'f'"; $inativos=true; }
+
   $sql = "SELECT
           	C.name as ccompany_name, C.acron as ccompany_acron,
           	U.*
           FROM
           	   sepud.users   U
           JOIN sepud.company C ON C.id = U.id_company
+          ".$filtro."
           ORDER BY C.acron, U.name ASC";
   $rs  = pg_query($conn_neogrid,$sql);
   if(!pg_num_rows($rs))
@@ -51,9 +56,19 @@
 								<section class="panel">
 									<header class="panel-heading">
                     <div class="panel-actions" style='margin-top:-12px'>
+
                       <a href="usuarios/FORM_novo_usuario.php">
-                        <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary"><i class="fa fa-user-plus"></i> Novo usuário</button>
+                        <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary loading"><i class="fa fa-user-plus"></i> Novo usuário</button>
                       </a>
+                      <? if($inativos){ ?>
+                        <a href="usuarios/index.php">
+                          <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-success loading"><i class="fa fa-users"></i> Ver ativos</button>
+                        </a>
+                      <? }else{ ?>
+                      <a href="usuarios/index.php?filtro=inativos">
+                        <button type="button" class="mb-xs mt-xs mr-xs btn btn-xs btn-danger loading"><i class="fa fa-users"></i> Ver excluidos</button>
+                      </a>
+                    <? } ?>
                       <!--<a href="#" ic-get-from="sistema/logs.php" ic-target="#wrap" class="mb-xs mt-xs mr-xs btn btn-xs btn-primary"><i class="fa fa-user-plus"></i> Novo usuário !</a>-->
 									  </div>
                   </header>
@@ -116,5 +131,5 @@
 
 
 <script>
-
+$(".loading").click(function(event){ $(this).addClass("disabled").html("<i class=\"fa fa-spinner fa-spin\"></i> <small>Aguarde</small>");});
 </script>
